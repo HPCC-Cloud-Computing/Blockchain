@@ -250,3 +250,86 @@ Các bước sinh key:
 
 ###### Peer-to-Peer Network Architecture
 
+* Tất cả các node đều ngang bằng nhau, không có node nào đặc biệt hơn node nào.
+* Không có server chung, không trung gian, không phân cấp bậc.
+
+###### Nodes Types and Roles
+
+* Các node trong mạng lưới btc có thể có vai trò (role) khác nhau.
+
+* Btc node: 
+
+  | Role                | Full node | Lightweight node |
+  | :------------------ | :-------: | :--------------: |
+  | Routing             |    Yes    |       Yes        |
+  | Blockchain database |    Yes    |        No        |
+  | Mining              | Optional  |     Optional     |
+  | Wallet services     | Optional  |     Optional     |
+
+###### The Extended Bitcoin Network
+
+* Các node:
+  * Chạy các phiên bản Client khác nhau (Bitcoin Core).
+  * Dùng các giao thức P2P khác nhau (BitcoinJ, Libbitcoin, btcd).
+  * Nhiều role khác nhau.
+* Dựa trên nền Bitcoin Core, có thể tạo ra rất nhiều ứng dụng khác: exchanges, wallets, block explorers, ...
+
+###### Network Discovery
+
+Khi một node mới xuất hiện:
+
+* Nó phải kết nối tới các node khác xung quanh (ít nhất là 1).
+
+* Thường sử dụng cổng 8333 TCP.
+* Không có node đặc biệt, nhưng một số node ổn định được list lại: **seed nodes**.
+* Khi kết nối thành công, nó gửi IP đến các node xung quanh, các node xung quanh lại gửi ra các node xung quanh khác.
+* Nó cũng có thể gửi thông điệp để lấy danh sách các peer của neighbor nó.
+
+###### Full Nodes
+
+* Chứa toàn bộ blockchain (Full blockchain nodes).
+* Có thể build, verify một cách độc lập, nhưng vẫn phải kết nối tới network để update block mới.
+
+###### Exchanging "Inventory"
+
+* Xây dựng blockchain là điều đầu tiên mà full node cần làm.
+* Sync dựa trên `BestHeight`.
+  * Node có blockchain có thể nhận biết được đối phương cần phải thêm block nào để có thể đuổi kịp, sau đó nó sẽ gửi 500 block để share.
+  * Node nhận có thể track số block mỗi peer gửi (đã request mà chưa nhận được, hay vượt quá số block cho phép - định nghĩa trong `MAX_BLOCKS_IN_TRANSIT_PER_PEER`).
+
+###### Simplified Payment Verification (SPV) Nodes
+
+* Các SPV Node có thể thao tác với blockchain mà không cần lưu trữ toàn bộ blockchain.
+* Nó chỉ lưuduy nhất block header mà không lưu các transaction (nhỏ hơn khoảng 1000 lần full blockchain).
+* SPV không có cái nhìn toàn cảnh về UTXO.
+* Nó dựa vào các peer khác để thực hiện verify các transaction.
+* SPV verify transaction dựa trên **depth** của blockchain thay vì **height**.
+  * Full node verify chuỗi các block và transaction.
+  * SPV node chỉ verify chuỗi các block, liên kết chúng tới các giao dịch liên quan.
+  * VD để kiểm nghiệm 1 transaction ở block thứ 300_000 
+    * Full node sẽ duyệt toàn bộ blockchain, build UTXO db sau đó kiểm tra các input là hợp lệ.
+    * SPV node sẽ tạo một liên kết giữa transaction và block chứa nó, sử dụng Merkle Path. Sau đó đợi thêm 6 block nữa (300_001 - 300_006), rồi verify. Nếu đã có 6 block sau đó, chứng tỏ mạng lưới đã chấp nhận rằng transaction đó là hợp lệ (không double-spend).
+* SPV node có thể nhận biết transaction có tồn tại trong block hay không, nhờ (request) Merkle Path, và xác thực bằng chuỗi PoW (6 block).
+  * Tuy nhiên SPV không thể kiểm tra được việc transaction đó sử dụng chung UTXO.
+  * Để tránh loại tấn công này, SPV node cần kết nối tới một vài node ngẫu nhiên.
+
+###### Bloom Filters
+
+* Là một **probabilistic search filter** (Search xác xuất?), giúp mô tả 1 pattern mà không cần nêu chính xác nó.
+* Dùng cho SPV khi yêu cầu các peer khác để lấy transaction ứng với một pattern.
+
+###### Bloom Filters and Inventory Updates
+
+* Bloom filter được dùng để lọc các transaction (và block chứa chúng), được SPV sử dụng khi gửi request tới các peer.
+  * Khi phản hồi, peer sẽ gửi các block header ứng với các block tìm được, cùng với Merkle Path cho mỗi transaction tìm được.
+
+###### Transaction Pool
+
+* Lưu trữ các transaction chưa được xác nhận.
+* Ngoài ra, một số node còn lưu trữ các orphaned transaction (input tham chiếu tới output không tồn tại).
+* Chỉ lưu trên local storage, không lưu trên persistent storage (?) - page 160
+
+###### Alert Messages
+
+* Dùng để gửi tín hiệu cho tất cả các node khi gặp sự cố nghiêm trọng.
+
