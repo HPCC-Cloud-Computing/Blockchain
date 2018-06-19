@@ -333,3 +333,72 @@ Khi một node mới xuất hiện:
 
 * Dùng để gửi tín hiệu cho tất cả các node khi gặp sự cố nghiêm trọng.
 
+#### 7. The Blockchain
+
+###### Introduction
+
+* Cấu trúc dạng link list ngược (dùng con trỏ prev).
+
+* Sử dụng LevelDB.
+
+* **Height**: khoảng cách so với block 1. **Top** hoặc **tip**: block mới nhất.
+
+* Mỗi block được xác định bởi mã hash (SHA256). Mỗi block cũng tham chiếu tới block trước nó. Block đầu tiên được gọi là **genesis block**
+
+* Do mỗi block chứa hash của block trước nó, điều này làm ảnh hưởng tới mã hash của chính nó. Mã hash của nó sẽ bị thay đổi nếu block trước nó thay đổi.
+
+  => Thay đổi 1 block sẽ làm thay đổi cả blockchain 
+
+  => Tính toán từ đầu
+
+###### Structure of a Blockchain
+
+* Block gồm:
+  * Header: metadata
+  * Transaction counter
+  * Transactions
+
+###### Block Header:
+
+* Version
+* Previous Block Hash
+* Merkle Root
+* Timestamp
+* Difficult Target
+* Nonce
+
+###### Block Identifier - Block Header Hash and Block Height
+
+* ID = block hash = băm header 2 lần bằng SHA256. ID là duy nhất.
+* Có thể sử dụng **height** thay cho block hash để xác định block. VD: genesis block có height 0.
+* Không như block hash. **Height** không phải duy nhất (Khi các block tranh nhau để được network chấp nhận có height bằng nhau).
+
+###### The Genesis Block
+
+* Là block đầu tiên, được tạo tự động bằng bitcoin client.
+
+###### Linking Blocks in the Blockchain
+
+* Khi nhận block mới, node sẽ kiểm tra prev block hash của nó.
+* Nếu trùng với hash block cuối cùng, nó sẽ thêm vào blockchain local trong máy của nó.
+
+###### Merkle Trees
+
+* Merkle Tree được dùng để tổng hợp các transaction trong 1 block.
+* Merkle Tree trong btc dùng double-SHA256.
+* Số lá phải là số chẵn. Nếu lẻ, nó sẽ tự động duplicate lá cuối cùng.
+* Để kiểm tra 1 transaction có trong 1 block hay không, ta cần Merkle Path, thời gian 2O(logn).
+* Merkle Tree không được lưu trong block.
+
+###### Merkle Trees and SPV
+
+* Khi cần kiểm tra một transaction
+  * SPV sẽ gửi bloom filter cho các peer khác.
+  * Peer gửi lại block header và merkle path tương ứng với transaction tìm được.
+  * SPV sử dụng Merkle Path để kiểm tra transaction.
+  * SPV sử dụng Block Header kiểm tra block.
+
+#### 8. Mining and Consensus
+
+###### Introduction
+
