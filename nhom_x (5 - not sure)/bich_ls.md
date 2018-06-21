@@ -242,7 +242,7 @@ Các bước sinh key:
 * Trước và sau khi chạy script đều không lưu lại trạng thái, mọi thứ cần thiết cho script này đều nằm trong script.
 * Đều cho một kết quả ở mọi hệ thống.
 
-  ###### Standard Transactions
+###### Standard Transactions
 
 * Có 5 kiểu tiêu chuẩn cho script: P2PKH, Public-Key, Multi-Sig, P2SH, và OP_RETURN.
 
@@ -402,3 +402,98 @@ Khi một node mới xuất hiện:
 
 ###### Introduction
 
+* Mining là quá trình thêm block vào blockchain, nó cũng ngăn chăn sự gian lận, double spend.
+* Người đào thành công được trả công bằng btc:
+  * Lượng btc thưởng khi có block mới.
+  * Phí giao dịch.
+* Quá trình đào ~ 10 phút.
+* **Mining** phục vụ cho việc phi tập trung, mục đích chính không phải để sinh ra btc mới.
+
+###### Bitcoin Economics and Currency Creation
+
+* Thời kì đầu, phần thưởng cho block mới là 50 BTC, cứ 4 năm giảm 1 nửa.
+
+###### De-centralized Concensus
+
+* Câu hỏi: làm thế nào để các peer có thể đồng thuận với 1 kết quả  mà không cần trung gian?
+* Gồm 4 quá trình chính:
+  * Verify transaction độc lập.
+  * Tập hợp các transaction để tạo block mới độc lập.
+  * Verify block độc lập.
+  * Lựa chọn độc lập (sức mạnh tính toán lớn nhất - PoW).
+
+###### Independent Verification of Transactions
+
+* Các node sẽ truyền tay nhau transaction, để lan rộng ra toàn bộ network.
+* Trước khi nhận, sẽ cần verify transaction.
+  * Transaction syntax, data structure
+  * Input/Output có rỗng hay không.
+  * Transaction size
+  * Output value
+  * Transaction không phải coinbase (input có hash = 0, N = -1)
+  * scriptSig, scriptPubKey
+  * ...
+
+###### Mining Nodes
+
+* Việc 1 block mới đc lan truyền đồng nghĩa với việc kết thúc cuộc thi "đào".
+
+###### Aggregating Transactions into Blocks
+
+* Sau khi validate transaction, nó sẽ được đưa vào tx pool
+* Trong khi đào block n, nó tạo trước **candidate block** để chuẩn bị cho block thứ n+1.
+
+###### Transaction Age, Fees, and Priority
+
+* Transaction được ưu tiên theo **age** của UTXO trong input của nó.
+* Các transaction được ưu tiên thêm vào block có thể được gửi mà không tốn phí.
+* Độ ưu tiên = Sum (Input value * Input Age) / Transaction size
+* Độ ưu tiên cao: lớn hơn **57_600_000**
+  * 1 btc (100_000_000)
+  * 1 ngày (144 block).
+  * transaction 250 byte.
+* 50KB trong danh sách transaction được dành cho transaction ưu tiên cao.
+* Thứ tự:
+  * Coinbase.
+  * 50KB: Transaction ưu tiên cao
+  * Các transaction khác (phí cao - thấp)
+  * Nếu thừa dung lượng, có thể thêm 1 vài transaction không có phí.
+
+=> Transaction còn lại ngày càng có độ ưu tiên cao hơn, các transaction không có phí cũng vậy.
+
+* Không có timeout, tuy nhiên có thể mất nếu node đó restart máy (vì lưu trong bộ nhớ trong).
+* Các ứng dụng ví thường thiết lập có thể tạo lại transaction với phí giao dịch cao hơn nếu quá 1 khoảng thời gian nhất định.
+
+###### The Generation Transaction
+
+* Là transaction đầu tiên trong block
+* Còn gọi là **coinbase transaction**
+* Chỉ có một input, gọi là coinbase.
+* Hash: 0, Output index: 0xFFFFFFFF
+
+###### Coinbase Data
+
+* Ở genesis block: "The Times 03/Jan/ 2009 Chancellor on brink of second bailout for banks", được dùng như 1 thông điệp.
+* Giờ thường dùng để chứa extra nonce.
+
+###### Constructing the Block Header
+
+| Size     | Field               |
+| -------- | ------------------- |
+| 4 bytes  | Version             |
+| 32 bytes | Previous Block Hash |
+| 32 bytes | Merkle Root         |
+| 4 bytes  | Timestamp           |
+| 4 bytes  | Difficult Target    |
+| 4 bytes  | Nonce               |
+
+* Các bước thực hiện:
+  * Version: 2
+  * Thêm prev hash
+  * Tạo Merkle tree
+  * Thêm timestamp
+  * Tính target
+  * Nonce: 0
+* Sau đó có thể tiến hành đào.
+
+###### Mining the Block
