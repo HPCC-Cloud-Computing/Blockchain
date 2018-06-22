@@ -1,3 +1,11 @@
+# Hướng dẫn xây dựng blockchain đơn giản (Golang)
+
+(xin phép thầy đặt phần này ở đầu để các bạn dễ thấy)
+
+* [Repo](https://github.com/Jeiwan/blockchain_go)
+
+* [Documentation](https://jeiwan.cc/posts/building-blockchain-in-go-part-1/)
+
 # Nội dung các buổi họp nhóm
 
 ## Meeting 15/06/2018
