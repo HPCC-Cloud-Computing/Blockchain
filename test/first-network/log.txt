@@ -1,0 +1,1 @@
+[31m2018-07-06 12:53:30.712 +07 [main] main -> ERRO 001[0m Fatal error when initializing core config : error when reading core config file: Unsupported Config Type ""
