@@ -92,15 +92,13 @@ func (t *MainChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return t.initUser(stub, args)
 	} else if function == "initProfile" {
 		return t.initProfile(stub, args)
-
+	}
 	return shim.Success([]byte("Invalid invoke function name. Expecting \"invoke\" \"query\""))
 }
 
 func main() {
-	a := new(MainChaincode)
-	stubA := shim.NewMockStub("ex05", a)
-	a.Init(stubA)
-	err := shim.Start(a)
+
+	err := shim.Start(new(MainChaincode))
 	if err != nil {
 		fmt.Println("Error starting Simple chaincode: ", err)
 	}
