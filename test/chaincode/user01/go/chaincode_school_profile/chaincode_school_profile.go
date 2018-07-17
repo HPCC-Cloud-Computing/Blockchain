@@ -16,9 +16,11 @@ type ProfileChaincode struct {
 
 // Profile --
 type Profile struct {
-	UserID    string  `json:"user_id"`
-	ListClass []Class `json:"list_class"`
-	BC        string  `json:"bc"`
+	UserID  string   `json:"user_id"`
+	Class10 Class    `json:"class_10"`
+	Class11 Class    `json:"class_11"`
+	Class12 Class    `json:"class_12"`
+	BC      []string `json:"bc"`
 }
 
 // Class --
@@ -50,7 +52,7 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 	//   0          1      2
 	// "userID", "class", "bc",
 	if len(args) != 3 {
-		return shim.Error("Incorrect number of arguments. Expecting 3")
+		return shim.Error("Incorrect number of arguments. Expecting 4")
 	}
 
 	userID := args[0]
@@ -62,8 +64,8 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 	if err != nil {
 		return shim.Error("Failed to get user: " + err.Error())
 	} else if userAsBytes != nil {
-		fmt.Println("This user already exists: " + userID)
-		return shim.Error("This user already exists: " + userID)
+		fmt.Println("This profile already exists: " + userID)
+		return shim.Error("This profile already exists: " + userID)
 	}
 
 	var className string
@@ -89,7 +91,7 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 	listSubject := strings.Split(subjects, "&")
 
 	for _, value := range listSubject {
-		valueNew := strings.Split(value, "$")
+		valueNew := strings.Split(value, "#")
 		listSubjectNew = append(listSubjectNew, Subject{valueNew[0], valueNew[1]})
 	}
 
@@ -100,18 +102,27 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 	}
 
 	class := Class{className, nameSchool, nameHT, nameGVCN, listSubjectNew, hk, dhNew}
-	listClass := make([]Class, 3)
-	listClass = append(listClass, class)
 
-	// ==== Create user object and marshal to JSON ====
-	user := &Profile{userID, listClass, bc}
-	userJSONasBytes, err := json.Marshal(user)
+	var classA Class
+	var classB Class
+
+	var bcNew []string
+
+	for _, value := range strings.Split(bc, "#") {
+		bcNew = append(bcNew, value)
+	}
+
+	// ==== Create profile object and marshal to JSON ====
+
+	profile := &Profile{userID, class, classA, classB, bcNew}
+
+	profileJSONasBytes, err := json.Marshal(profile)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
 	// === Save user to state ===
-	err = stub.PutState(userID, userJSONasBytes)
+	err = stub.PutState(userID, profileJSONasBytes)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -123,21 +134,29 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 
 	//   0         1	   2
 	// "userID", "class", "bc"
-	if len(args) < 3 {
+	if len(args) < 4 {
 		return shim.Error("Incorrect number of arguments. Expecting 3")
 	}
 
 	userID := args[0]
 	classNew := args[1]
 	bc := args[2]
+	level := args[3]
 
 	fmt.Println("- start updateProfile ", userID)
 
-	userAsBytes, err := stub.GetState(userID)
+	profileAsBytes, err := stub.GetState(userID)
 	if err != nil {
 		return shim.Error("Failed to get user:" + err.Error())
-	} else if userAsBytes == nil {
+	} else if profileAsBytes == nil {
 		return shim.Error("User does not exist")
+	}
+
+	profileOld := &Profile{}
+
+	err = json.Unmarshal(profileAsBytes, &profileOld) //unmarshal it aka JSON.parse()
+	if err != nil {
+		return shim.Error(err.Error())
 	}
 
 	var className string
@@ -174,12 +193,23 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 	}
 
 	class := Class{className, nameSchool, nameHT, nameGVCN, listSubjectNew, hk, dhNew}
-	listClass := make([]Class, 3)
-	listClass = append(listClass, class)
+	var bcNew []string
 
-	profileOld := &Profile{userID, listClass, bc}
+	for _, value := range strings.Split(bc, "#") {
+		bcNew = append(bcNew, value)
+	}
 
-	userJSONasBytes, _ := json.Marshal(profileOld)
+	var profileNew *Profile
+
+	if level == "10" {
+		profileNew = &Profile{userID, class, profileOld.Class11, profileOld.Class12, bcNew}
+	} else if level == "11" {
+		profileNew = &Profile{userID, profileOld.Class10, class, profileOld.Class12, bcNew}
+	} else {
+		profileNew = &Profile{userID, profileOld.Class10, profileOld.Class11, class, bcNew}
+	}
+
+	userJSONasBytes, _ := json.Marshal(profileNew)
 	err = stub.PutState(userID, userJSONasBytes)
 	if err != nil {
 		return shim.Error(err.Error())

@@ -39,24 +39,43 @@ func (t *MainChaincode) initUser(stub shim.ChaincodeStubInterface, args []string
 	channelName = ""
 
 	// Query new chaincode
-	if chaincodeName == "information" {
-		functionName := args[1]
-		userID := args[2]
-		nameUser := args[3]
-		dateOfBrith := args[4]
-		sexUser := args[5]
-		addressUser := args[6]
+	functionName := args[1]
+	userID := args[2]
+	nameUser := args[3]
+	dateOfBrith := args[4]
+	sexUser := args[5]
+	addressUser := args[6]
 
-		queryArgs = toChaincodeArgs(functionName, userID, nameUser, dateOfBrith, sexUser, addressUser)
+	queryArgs = toChaincodeArgs(functionName, userID, nameUser, dateOfBrith, sexUser, addressUser)
 
-	} else {
-		functionName := args[1]
-		userID := args[2]
-		class := args[3]
-		bc := args[4]
-
-		queryArgs = toChaincodeArgs(functionName, userID, class, bc)
+	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
+	if response.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode. Got error: %s", response.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
 	}
+	return shim.Success(nil)
+}
+
+func (t *MainChaincode) initProfile(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var channelName string
+	var queryArgs [][]byte
+
+	if len(args) < 6 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 1")
+	}
+
+	chaincodeName := args[0]
+
+	channelName = ""
+
+	// Query new chaincode
+	functionName := args[1]
+	userID := args[2]
+	class := args[3]
+	bc := args[4]
+
+	queryArgs = toChaincodeArgs(functionName, userID, class, bc)
 
 	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
 	if response.Status != shim.OK {
@@ -71,7 +90,8 @@ func (t *MainChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	function, args := stub.GetFunctionAndParameters()
 	if function == "initUser" {
 		return t.initUser(stub, args)
-	}
+	} else if function == "initProfile" {
+		return t.initProfile(stub, args)
 
 	return shim.Success([]byte("Invalid invoke function name. Expecting \"invoke\" \"query\""))
 }

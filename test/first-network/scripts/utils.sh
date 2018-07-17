@@ -85,7 +85,7 @@ installChaincode() {
   ORG=$2
   setGlobals $PEER $ORG
 
-  peer chaincode install -n bbb1 -v 1.0 -p github.com/chaincode/user01/go/chaincode_main >&log1.txt
+  peer chaincode install -n bbb -v 1.0 -p github.com/chaincode/user01/go/main_chaincode >&log1.txt
   cat log1.txt
 
   peer chaincode install -n bbb2 -v 1.0 -p github.com/chaincode/user01/go/chaincode_information >&log2.txt
@@ -99,7 +99,7 @@ instantiateChaincode() {
 
   export CHANNEL_NAME=mychannel
 
-  peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n bbb1 -v 1.0 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log1.txt
+  peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n bbb -v 1.0 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log1.txt
   cat log1.txt
   
   peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n bbb2 -v 1.0 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log2.txt
