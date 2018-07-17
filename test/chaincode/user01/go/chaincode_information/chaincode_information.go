@@ -15,11 +15,11 @@ type InformationChaincode struct {
 }
 
 type User struct {
-	UserID      string `json:"userId"`
-	NameUser    string `json:"nameUser"`
-	DateOfBrith string `json:"dateOfBrith"`
-	SexUser     string `json:"sexUser"`
-	AddressUser string `json:"addressUser"`
+	UserID      string `json:"user_id"`
+	NameUser    string `json:"name_user"`
+	DateOfBrith string `json:"date_of_brith"`
+	SexUser     string `json:"sex_user"`
+	AddressUser string `json:"address_user"`
 }
 
 func (t *InformationChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
