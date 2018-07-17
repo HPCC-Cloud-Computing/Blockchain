@@ -52,7 +52,7 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 	//   0          1      2
 	// "userID", "class", "bc",
 	if len(args) != 3 {
-		return shim.Error("Incorrect number of arguments. Expecting 4")
+		return shim.Error("Incorrect number of arguments. Expecting 3")
 	}
 
 	userID := args[0]
@@ -60,10 +60,10 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 	bc := args[2]
 
 	// ==== Check if user already exists ====
-	userAsBytes, err := stub.GetState(userID)
+	profileAsBytes, err := stub.GetState(userID)
 	if err != nil {
 		return shim.Error("Failed to get user: " + err.Error())
-	} else if userAsBytes != nil {
+	} else if profileAsBytes != nil {
 		fmt.Println("This profile already exists: " + userID)
 		return shim.Error("This profile already exists: " + userID)
 	}
@@ -132,10 +132,10 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 
 func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
-	//   0         1	   2
-	// "userID", "class", "bc"
+	//   0         1	   2      4
+	// "userID", "class", "bc" "level"
 	if len(args) < 4 {
-		return shim.Error("Incorrect number of arguments. Expecting 3")
+		return shim.Error("Incorrect number of arguments. Expecting 4")
 	}
 
 	userID := args[0]
@@ -313,13 +313,13 @@ func (t *ProfileChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response 
 	fmt.Println("user profile Invoke")
 	function, args := stub.GetFunctionAndParameters()
 	if function == "getProfileByID" {
-		// get user by id
+		// get profile by id
 		return t.getProfileByID(stub, args)
 	} else if function == "deleteProfile" {
-		// Delete user
+		// Delete profile
 		return t.deleteProfile(stub, args)
 	} else if function == "updateProfile" {
-		// update user
+		// update profile
 		return t.updateProfile(stub, args)
 	} else if function == "initProfile" {
 		// create new profile
