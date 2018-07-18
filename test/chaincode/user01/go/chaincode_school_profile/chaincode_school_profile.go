@@ -278,10 +278,11 @@ func (t *ProfileChaincode) getListProfileOfClass(stub shim.ChaincodeStubInterfac
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 
-	schoolYear := args[0]
-	className := args[1]
+	level := args[0]
+	schoolYear := args[1]
+	className := args[2]
 
-	queryString := fmt.Sprintf("{\"selector\":{\"school_year\":\"%s\",\"class_name\":\"%s\"}}", schoolYear, className)
+	queryString := fmt.Sprintf("{\"selector\":{\"%s.school_year\":\"%s\",\"%s.class_name\":\"%s\"}}}", level, schoolYear, level, className)
 
 	queryResults, err := getQueryResultForQueryString(stub, queryString)
 	if err != nil {
@@ -352,7 +353,7 @@ func (t *ProfileChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response 
 		return t.getListProfileOfClass(stub, args)
 	}
 
-	return shim.Error("Invalid invoke function name. Expecting \"invoke\" \"delete\" \"query\"")
+	return shim.Error("Invalid invoke function name. Expecting \"query\"")
 }
 
 func main() {

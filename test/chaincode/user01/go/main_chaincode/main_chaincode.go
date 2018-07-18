@@ -31,8 +31,8 @@ func (t *MainChaincode) initUser(stub shim.ChaincodeStubInterface, args []string
 	var channelName string
 	var queryArgs [][]byte
 
-	if len(args) < 7 {
-		return shim.Error("Incorrect number of arguments. Expecting atleast 7")
+	if len(args) < 6 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 6")
 	}
 
 	chaincodeName := args[0]
@@ -40,12 +40,12 @@ func (t *MainChaincode) initUser(stub shim.ChaincodeStubInterface, args []string
 	channelName = ""
 
 	// Query new chaincode
-	functionName := args[1]
-	userID := args[2]
-	nameUser := args[3]
-	dateOfBrith := args[4]
-	sexUser := args[5]
-	addressUser := args[6]
+	functionName := "initUser"
+	userID := args[1]
+	nameUser := args[2]
+	dateOfBrith := args[3]
+	sexUser := args[4]
+	addressUser := args[5]
 
 	queryArgs = toChaincodeArgs(functionName, userID, nameUser, dateOfBrith, sexUser, addressUser)
 
@@ -62,8 +62,8 @@ func (t *MainChaincode) initProfile(stub shim.ChaincodeStubInterface, args []str
 	var channelName string
 	var queryArgs [][]byte
 
-	if len(args) < 5 {
-		return shim.Error("Incorrect number of arguments. Expecting atleast 5")
+	if len(args) < 4 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 4")
 	}
 
 	chaincodeName := args[0]
@@ -71,10 +71,23 @@ func (t *MainChaincode) initProfile(stub shim.ChaincodeStubInterface, args []str
 	channelName = ""
 
 	// Query new chaincode
-	functionName := args[1]
-	userID := args[2]
-	class := args[3]
-	bc := args[4]
+	functionName := "initProfile"
+	userID := args[1]
+	class := args[2]
+	bc := args[3]
+
+	queryArgsA := toChaincodeArgs("getUserByID", userID)
+
+	responseA := stub.InvokeChaincode("aaa1", queryArgsA, channelName)
+	if responseA.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode. Got error: %s", responseA.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	if responseA.Payload == nil {
+		return shim.Error("User does not exist")
+	}
 
 	queryArgs = toChaincodeArgs(functionName, userID, class, bc)
 
@@ -84,6 +97,7 @@ func (t *MainChaincode) initProfile(stub shim.ChaincodeStubInterface, args []str
 		fmt.Printf(errStr)
 		return shim.Error(errStr)
 	}
+
 	return shim.Success(nil)
 }
 
@@ -91,8 +105,8 @@ func (t *MainChaincode) updateProfile(stub shim.ChaincodeStubInterface, args []s
 	var channelName string
 	var queryArgs [][]byte
 
-	if len(args) < 6 {
-		return shim.Error("Incorrect number of arguments. Expecting atleast 6")
+	if len(args) < 5 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 5")
 	}
 
 	chaincodeName := args[0]
@@ -100,11 +114,11 @@ func (t *MainChaincode) updateProfile(stub shim.ChaincodeStubInterface, args []s
 	channelName = ""
 
 	// Query new chaincode
-	functionName := args[1]
-	userID := args[2]
-	class := args[3]
-	bc := args[4]
-	level := args[5]
+	functionName := "updateProfile"
+	userID := args[1]
+	class := args[2]
+	bc := args[3]
+	level := args[4]
 
 	queryArgs = toChaincodeArgs(functionName, userID, class, bc, level)
 
@@ -121,8 +135,8 @@ func (t *MainChaincode) updateUser(stub shim.ChaincodeStubInterface, args []stri
 	var channelName string
 	var queryArgs [][]byte
 
-	if len(args) < 7 {
-		return shim.Error("Incorrect number of arguments. Expecting atleast 7")
+	if len(args) < 6 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 6")
 	}
 
 	chaincodeName := args[0]
@@ -130,12 +144,12 @@ func (t *MainChaincode) updateUser(stub shim.ChaincodeStubInterface, args []stri
 	channelName = ""
 
 	// Query new chaincode
-	functionName := args[1]
-	userID := args[2]
-	nameUser := strings.ToLower(args[3])
-	dateOfBrith := args[4]
+	functionName := "updateUser"
+	userID := args[1]
+	nameUser := strings.ToLower(args[2])
+	dateOfBrith := args[3]
 	sexUser := strings.ToLower(args[4])
-	addressUser := strings.ToLower(args[6])
+	addressUser := strings.ToLower(args[5])
 
 	queryArgs = toChaincodeArgs(functionName, userID, nameUser, dateOfBrith, sexUser, addressUser)
 
@@ -250,7 +264,6 @@ func (t *MainChaincode) getListProfileOfClass(stub shim.ChaincodeStubInterface, 
 	channelName = ""
 
 	// Query new chaincode
-
 	queryArgs := toChaincodeArgs("getListProfileOfClass", schoolYear, className)
 
 	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
