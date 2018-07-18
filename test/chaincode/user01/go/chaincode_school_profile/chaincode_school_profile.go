@@ -27,6 +27,7 @@ type Profile struct {
 type Class struct {
 	ClassName  string    `json:"class_name"`
 	NameSchool string    `json:"name_school"`
+	SchoolYear string    `json:"school_year"`
 	NameHT     string    `json:"name_HT"`
 	NameGVCN   string    `json:"name_GVCN"`
 	Subjects   []Subject `ison:"subjects"`
@@ -70,6 +71,7 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 
 	var className string
 	var nameSchool string
+	var schoolYear string
 	var nameHT string
 	var nameGVCN string
 	var subjects string
@@ -80,11 +82,12 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 
 	className = value[0]
 	nameSchool = value[1]
-	nameHT = value[2]
-	nameGVCN = value[3]
-	subjects = value[4]
-	hk = value[5]
-	dh = value[6]
+	schoolYear = value[2]
+	nameHT = value[3]
+	nameGVCN = value[4]
+	subjects = value[5]
+	hk = value[6]
+	dh = value[7]
 
 	var listSubjectNew []Subject
 
@@ -101,7 +104,7 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 		dhNew = append(dhNew, value)
 	}
 
-	class := Class{className, nameSchool, nameHT, nameGVCN, listSubjectNew, hk, dhNew}
+	class := Class{className, nameSchool, schoolYear, nameHT, nameGVCN, listSubjectNew, hk, dhNew}
 
 	var classA Class
 	var classB Class
@@ -132,7 +135,7 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 
 func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
-	//   0         1	   2      4
+	//   0         1	   2      3
 	// "userID", "class", "bc" "level"
 	if len(args) < 4 {
 		return shim.Error("Incorrect number of arguments. Expecting 4")
@@ -161,6 +164,7 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 
 	var className string
 	var nameSchool string
+	var schoolYear string
 	var nameHT string
 	var nameGVCN string
 	var subjects string
@@ -171,18 +175,19 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 
 	className = value[0]
 	nameSchool = value[1]
-	nameHT = value[2]
-	nameGVCN = value[3]
-	subjects = value[4]
-	hk = value[5]
-	dh = value[6]
+	schoolYear = value[2]
+	nameHT = value[3]
+	nameGVCN = value[4]
+	subjects = value[5]
+	hk = value[6]
+	dh = value[7]
 
 	var listSubjectNew []Subject
 
 	listSubject := strings.Split(subjects, "&")
 
 	for _, value := range listSubject {
-		valueNew := strings.Split(value, "$")
+		valueNew := strings.Split(value, "#")
 		listSubjectNew = append(listSubjectNew, Subject{valueNew[0], valueNew[1]})
 	}
 
@@ -192,7 +197,7 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 		dhNew = append(dhNew, value)
 	}
 
-	class := Class{className, nameSchool, nameHT, nameGVCN, listSubjectNew, hk, dhNew}
+	class := Class{className, nameSchool, schoolYear, nameHT, nameGVCN, listSubjectNew, hk, dhNew}
 	var bcNew []string
 
 	for _, value := range strings.Split(bc, "#") {
@@ -259,6 +264,24 @@ func (t *ProfileChaincode) getProfileByID(stub shim.ChaincodeStubInterface, args
 	userID := args[0]
 
 	queryString := fmt.Sprintf("{\"selector\":{\"user_id\":\"%s\"}}", userID)
+
+	queryResults, err := getQueryResultForQueryString(stub, queryString)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	return shim.Success(queryResults)
+}
+
+func (t *ProfileChaincode) getListProfileOfClass(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+
+	if len(args) < 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
+
+	schoolYear := args[0]
+	className := args[1]
+
+	queryString := fmt.Sprintf("{\"selector\":{\"school_year\":\"%s\",\"class_name\":\"%s\"}}", schoolYear, className)
 
 	queryResults, err := getQueryResultForQueryString(stub, queryString)
 	if err != nil {

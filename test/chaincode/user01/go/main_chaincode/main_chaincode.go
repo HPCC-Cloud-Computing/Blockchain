@@ -148,6 +148,121 @@ func (t *MainChaincode) updateUser(stub shim.ChaincodeStubInterface, args []stri
 	return shim.Success(nil)
 }
 
+func (t *MainChaincode) deleteUser(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var channelName string
+
+	if len(args) < 3 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 3")
+	}
+
+	chaincodeNameUser := args[0]
+	chaincodeNameProfile := args[1]
+
+	channelName = ""
+
+	// Query new chaincode
+	userID := args[2]
+
+	queryArgsUser := toChaincodeArgs("deleteUser", userID)
+
+	responseA := stub.InvokeChaincode(chaincodeNameUser, queryArgsUser, channelName)
+	if responseA.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode user. Got error: %s", responseA.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	queryArgsProfile := toChaincodeArgs("deleteProfile", userID)
+
+	responseB := stub.InvokeChaincode(chaincodeNameProfile, queryArgsProfile, channelName)
+	if responseB.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", responseB.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	return shim.Success(nil)
+}
+
+func (t *MainChaincode) getUserByID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var channelName string
+
+	if len(args) < 2 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 2")
+	}
+
+	chaincodeName := args[0]
+
+	channelName = ""
+
+	// Query new chaincode
+	userID := args[1]
+
+	queryArgs := toChaincodeArgs("getUserByID", userID)
+
+	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
+	if response.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode user. Got error: %s", response.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	return shim.Success(response.Payload)
+}
+
+func (t *MainChaincode) getProfileByID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var channelName string
+
+	if len(args) < 2 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 2")
+	}
+
+	chaincodeName := args[0]
+
+	channelName = ""
+
+	// Query new chaincode
+	userID := args[1]
+
+	queryArgs := toChaincodeArgs("getProfileByID", userID)
+
+	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
+	if response.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode user. Got error: %s", response.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	return shim.Success(response.Payload)
+}
+
+func (t *MainChaincode) getListProfileOfClass(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var channelName string
+
+	if len(args) < 3 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 3")
+	}
+
+	chaincodeName := args[0]
+	schoolYear := args[1]
+	className := args[2]
+
+	channelName = ""
+
+	// Query new chaincode
+
+	queryArgs := toChaincodeArgs("getProfileByID", schoolYear, className)
+
+	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
+	if response.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode user. Got error: %s", response.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	return shim.Success(response.Payload)
+}
+
 func (t *MainChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	function, args := stub.GetFunctionAndParameters()
 	if function == "initUser" {
@@ -158,6 +273,14 @@ func (t *MainChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return t.updateUser(stub, args)
 	} else if function == "updateProfile" {
 		return t.updateProfile(stub, args)
+	} else if function == "deleteUser" {
+		return t.deleteUser(stub, args)
+	} else if function == "getUserByID" {
+		return t.getUserByID(stub, args)
+	} else if function == "getProfileByID" {
+		return t.getProfileByID(stub, args)
+	} else if function == "getListProfileOfClass" {
+		return t.getListProfileOfClass(stub, args)
 	}
 	return shim.Success([]byte("Invalid invoke function name. Expecting \"invoke\" \"query\""))
 }
