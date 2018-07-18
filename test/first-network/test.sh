@@ -39,7 +39,7 @@ peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src
 peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n ccc -c '{"Args":["deleteUser","ccc1","ccc2","3012"]}'
 peer chaincode query -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n ccc -c '{"Args":["getUserByID","ccc1","3012"]}'
 peer chaincode query -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n ccc -c '{"Args":["getProfileByID","ccc2","3012"]}'
-peer chaincode query -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n ccc -c '{"Args":["getListProfileOfClass","ccc2","3012"]}'
+peer chaincode query -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n ccc -c '{"Args":["getListProfileOfClass","ccc2","2017-2018","10A1"]}'
 
 
 peer chaincode install -n ccc -v 3.3 -p github.com/chaincode/user01/go/main_chaincode

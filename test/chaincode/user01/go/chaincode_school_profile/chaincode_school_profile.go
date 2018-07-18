@@ -347,6 +347,9 @@ func (t *ProfileChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response 
 	} else if function == "initProfile" {
 		// create new profile
 		return t.initProfile(stub, args)
+	} else if function == "getListProfileOfClass" {
+		// create new profile
+		return t.getListProfileOfClass(stub, args)
 	}
 
 	return shim.Error("Invalid invoke function name. Expecting \"invoke\" \"delete\" \"query\"")

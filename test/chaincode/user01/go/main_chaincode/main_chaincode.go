@@ -251,11 +251,11 @@ func (t *MainChaincode) getListProfileOfClass(stub shim.ChaincodeStubInterface, 
 
 	// Query new chaincode
 
-	queryArgs := toChaincodeArgs("getProfileByID", schoolYear, className)
+	queryArgs := toChaincodeArgs("getListProfileOfClass", schoolYear, className)
 
 	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
 	if response.Status != shim.OK {
-		errStr := fmt.Sprintf("Failed to query chaincode user. Got error: %s", response.Payload)
+		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", response.Payload)
 		fmt.Printf(errStr)
 		return shim.Error(errStr)
 	}
