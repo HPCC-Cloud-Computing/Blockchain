@@ -42,5 +42,5 @@ peer chaincode query -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/
 peer chaincode query -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n aaa -c '{"Args":["getListProfileOfClass","aaa2","class_10","2017-2018","10A1"]}'
 
 
-peer chaincode install -n aaa -v 3.3 -p github.com/chaincode/user01/go/main_chaincode
-peer chaincode upgrade -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n aaa -v 3.3 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')"
+peer chaincode install -n aaa -v 3.9 -p github.com/chaincode/user01/go/main_chaincode
+peer chaincode upgrade -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n aaa -v 3.9 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')"

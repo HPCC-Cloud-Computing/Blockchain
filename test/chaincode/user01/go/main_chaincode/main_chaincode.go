@@ -258,13 +258,14 @@ func (t *MainChaincode) getListProfileOfClass(stub shim.ChaincodeStubInterface, 
 	}
 
 	chaincodeName := args[0]
-	schoolYear := args[1]
-	className := args[2]
+	level := args[1]
+	schoolYear := args[2]
+	className := args[3]
 
 	channelName = ""
 
 	// Query new chaincode
-	queryArgs := toChaincodeArgs("getListProfileOfClass", schoolYear, className)
+	queryArgs := toChaincodeArgs("getListProfileOfClass", level, schoolYear, className)
 
 	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
 	if response.Status != shim.OK {

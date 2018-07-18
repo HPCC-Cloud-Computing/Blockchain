@@ -274,8 +274,8 @@ func (t *ProfileChaincode) getProfileByID(stub shim.ChaincodeStubInterface, args
 
 func (t *ProfileChaincode) getListProfileOfClass(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
-	if len(args) < 2 {
-		return shim.Error("Incorrect number of arguments. Expecting 2")
+	if len(args) < 3 {
+		return shim.Error("Incorrect number of arguments. Expecting 3")
 	}
 
 	level := args[0]
