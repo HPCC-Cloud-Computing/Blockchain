@@ -77,7 +77,7 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 	var nameHT string
 	var nameGVCN string
 	var subjects string
-	var finalScore int
+	var finalScore float64
 	var hk string
 	var dh string
 
@@ -99,10 +99,11 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 	for _, value := range listSubject {
 		valueNew := strings.Split(value, "#")
 		listSubjectNew = append(listSubjectNew, Subject{valueNew[0], valueNew[1]})
-		score, _ := strconv.Atoi(valueNew[1])
+		score, _ := strconv.ParseFloat(valueNew[1], 10)
 		finalScore = finalScore + score
 	}
-	finalScore = finalScore / len(listSubject)
+	fmt.Println("finalScore: ", len(listSubject), finalScore)
+	finalScore = finalScore / float64(len(listSubject))
 
 	var dhNew []string
 
@@ -110,7 +111,7 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 		dhNew = append(dhNew, value)
 	}
 
-	class := Class{className, nameSchool, schoolYear, nameHT, nameGVCN, listSubjectNew, strconv.Itoa(finalScore), hk, dhNew}
+	class := Class{className, nameSchool, schoolYear, nameHT, nameGVCN, listSubjectNew, strconv.FormatFloat(finalScore, 'f', 2, 64), hk, dhNew}
 
 	var classA Class
 	var classB Class
@@ -172,7 +173,7 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 	var nameHT string
 	var nameGVCN string
 	var subjects string
-	var finalScore int
+	var finalScore float64
 	var hk string
 	var dh string
 
@@ -194,11 +195,11 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 	for _, value := range listSubject {
 		valueNew := strings.Split(value, "#")
 		listSubjectNew = append(listSubjectNew, Subject{valueNew[0], valueNew[1]})
-		score, _ := strconv.Atoi(valueNew[1])
+		score, _ := strconv.ParseFloat(valueNew[1], 10)
 		finalScore = finalScore + score
 	}
 
-	finalScore = finalScore / len(listSubject)
+	finalScore = finalScore / float64(len(listSubject))
 
 	var dhNew []string
 
@@ -206,7 +207,7 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 		dhNew = append(dhNew, value)
 	}
 
-	class := Class{className, nameSchool, schoolYear, nameHT, nameGVCN, listSubjectNew, strconv.Itoa(finalScore), hk, dhNew}
+	class := Class{className, nameSchool, schoolYear, nameHT, nameGVCN, listSubjectNew, strconv.FormatFloat(finalScore, 'f', 2, 64), hk, dhNew}
 	var bcNew []string
 
 	for _, value := range strings.Split(bc, "#") {
