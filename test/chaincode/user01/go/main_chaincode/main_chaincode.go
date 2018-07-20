@@ -277,6 +277,31 @@ func (t *MainChaincode) getListProfileOfClass(stub shim.ChaincodeStubInterface, 
 	return shim.Success(response.Payload)
 }
 
+func (t *MainChaincode) checkScore(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var channelName string
+
+	if len(args) < 2 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 2")
+	}
+
+	chaincodeName := args[0]
+	userID := args[1]
+
+	channelName = ""
+
+	// Query new chaincode
+	queryArgs := toChaincodeArgs("checkScore", userID)
+
+	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
+	if response.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", response.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	return shim.Success(response.Payload)
+}
+
 func (t *MainChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	function, args := stub.GetFunctionAndParameters()
 	if function == "initUser" {
@@ -295,8 +320,10 @@ func (t *MainChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return t.getProfileByID(stub, args)
 	} else if function == "getListProfileOfClass" {
 		return t.getListProfileOfClass(stub, args)
+	} else if function == "checkScore" {
+		return t.checkScore(stub, args)
 	}
-	return shim.Success([]byte("Invalid invoke function name. Expecting \"invoke\" \"query\""))
+	return shim.Success([]byte("Invalid invoke function name"))
 }
 
 func main() {
@@ -305,7 +332,4 @@ func main() {
 	if err != nil {
 		fmt.Println("Error starting Simple chaincode: ", err)
 	}
-	// agr := (string){"Args":["a","10"]}
-	// stubA := shim.ChaincodeStubInterface()
-	// a.Init(stubA)
 }

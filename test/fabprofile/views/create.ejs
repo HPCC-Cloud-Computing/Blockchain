@@ -17,29 +17,29 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </head>
 
-<body>
-
-    <form class="form-horizontal">
-        <div class="form-group">
-            <label for="lop" class="col-sm-2 control-label">Lop</label>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" id="lop" placeholder="Lop">
+<body>  
+    <% var school_profile=["UserID","Lop","Truong","Nam Hoc","Hieu Truong","Giao Vien","Toan","Ly","Hanh Kiem","Danh Hieu","Bang Cap"] %>
+    <% var school_pf_tag=["userid","lop","truong","namhoc","hieutruong","gvcn","toan","ly","hanhkiem","danhhieu","bangcap"] %>
+    <form class="form-horizontal" method="POST" action="/notifychaincode">
+        <% for(var i=0; i< school_profile.length; i++) { %>
+            <div class="form-group">
+                <label for=<%= school_pf_tag[i] %> class="col-sm-2 control-label"><%= school_profile[i] %></label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id=<%= school_pf_tag[i] %> name=<%= school_pf_tag[i] %> placeholder="Lop">
+                </div>
             </div>
-        </div>
+        <% } %>
+               
 
-        <div class="form-group">
-            <label for="toan" class="col-sm-2 control-label">Toan</label>
-            <div class="col-sm-3">
-                <input type="number" class="form-control" id="toan" placeholder="Toan">
-            </div>
-        </div>
-       
+
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-default">Submit</button>
             </div>
         </div>
-    </form>
+
+
+
     </form>
 
 </body>

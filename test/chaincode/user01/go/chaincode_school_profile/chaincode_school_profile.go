@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -31,6 +32,7 @@ type Class struct {
 	NameHT     string    `json:"name_HT"`
 	NameGVCN   string    `json:"name_GVCN"`
 	Subjects   []Subject `ison:"subjects"`
+	FinalScore string    `json:"final_score"`
 	HK         string    `json:"hk"`
 	DH         []string  `json:"dh"`
 }
@@ -75,6 +77,7 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 	var nameHT string
 	var nameGVCN string
 	var subjects string
+	var finalScore int
 	var hk string
 	var dh string
 
@@ -96,7 +99,10 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 	for _, value := range listSubject {
 		valueNew := strings.Split(value, "#")
 		listSubjectNew = append(listSubjectNew, Subject{valueNew[0], valueNew[1]})
+		score, _ := strconv.Atoi(valueNew[1])
+		finalScore = finalScore + score
 	}
+	finalScore = finalScore / len(listSubject)
 
 	var dhNew []string
 
@@ -104,7 +110,7 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 		dhNew = append(dhNew, value)
 	}
 
-	class := Class{className, nameSchool, schoolYear, nameHT, nameGVCN, listSubjectNew, hk, dhNew}
+	class := Class{className, nameSchool, schoolYear, nameHT, nameGVCN, listSubjectNew, strconv.Itoa(finalScore), hk, dhNew}
 
 	var classA Class
 	var classB Class
@@ -114,8 +120,6 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 	for _, value := range strings.Split(bc, "#") {
 		bcNew = append(bcNew, value)
 	}
-
-	// ==== Create profile object and marshal to JSON ====
 
 	profile := &Profile{userID, class, classA, classB, bcNew}
 
@@ -157,7 +161,7 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 
 	profileOld := &Profile{}
 
-	err = json.Unmarshal(profileAsBytes, &profileOld) //unmarshal it aka JSON.parse()
+	err = json.Unmarshal(profileAsBytes, &profileOld)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -168,6 +172,7 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 	var nameHT string
 	var nameGVCN string
 	var subjects string
+	var finalScore int
 	var hk string
 	var dh string
 
@@ -189,7 +194,11 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 	for _, value := range listSubject {
 		valueNew := strings.Split(value, "#")
 		listSubjectNew = append(listSubjectNew, Subject{valueNew[0], valueNew[1]})
+		score, _ := strconv.Atoi(valueNew[1])
+		finalScore = finalScore + score
 	}
+
+	finalScore = finalScore / len(listSubject)
 
 	var dhNew []string
 
@@ -197,7 +206,7 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 		dhNew = append(dhNew, value)
 	}
 
-	class := Class{className, nameSchool, schoolYear, nameHT, nameGVCN, listSubjectNew, hk, dhNew}
+	class := Class{className, nameSchool, schoolYear, nameHT, nameGVCN, listSubjectNew, strconv.Itoa(finalScore), hk, dhNew}
 	var bcNew []string
 
 	for _, value := range strings.Split(bc, "#") {
@@ -214,8 +223,8 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 		profileNew = &Profile{userID, profileOld.Class10, profileOld.Class11, class, bcNew}
 	}
 
-	userJSONasBytes, _ := json.Marshal(profileNew)
-	err = stub.PutState(userID, userJSONasBytes)
+	profileJSONasBytes, _ := json.Marshal(profileNew)
+	err = stub.PutState(userID, profileJSONasBytes)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -232,8 +241,7 @@ func (t *ProfileChaincode) deleteProfile(stub shim.ChaincodeStubInterface, args 
 	}
 	userID := args[0]
 
-	// to maintain the color~name index, we need to read the marble first and get its color
-	valAsbytes, err := stub.GetState(userID) //get the marble from chaincode state
+	valAsbytes, err := stub.GetState(userID)
 	if err != nil {
 		jsonResp = "{\"Error\":\"Failed to get state for " + userID + "\"}"
 		return shim.Error(jsonResp)
@@ -248,7 +256,7 @@ func (t *ProfileChaincode) deleteProfile(stub shim.ChaincodeStubInterface, args 
 		return shim.Error(jsonResp)
 	}
 
-	err = stub.DelState(userID) //remove the marble from chaincode state
+	err = stub.DelState(userID)
 	if err != nil {
 		return shim.Error("Failed to delete state:" + err.Error())
 	}
@@ -333,6 +341,51 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 	return buffer.Bytes(), nil
 }
 
+func (t *ProfileChaincode) checkScore(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+
+	if len(args) < 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+
+	userID := args[0]
+
+	profileAsBytes, err := stub.GetState(userID)
+	if err != nil {
+		return shim.Error("Failed to get profile:" + err.Error())
+	} else if profileAsBytes == nil {
+		return shim.Error("Profile does not exist")
+	}
+
+	profileOld := &Profile{}
+
+	err = json.Unmarshal(profileAsBytes, &profileOld)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	value, _ := strconv.Atoi(profileOld.Class12.FinalScore)
+	if value >= 5 {
+		bcString := "Da tot nghiep cap 3"
+		profileOld.BC = append(profileOld.BC, bcString)
+		profileJSONasBytes, err := json.Marshal(profileOld)
+		err = stub.PutState(userID, profileJSONasBytes)
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		return shim.Success([]byte(bcString))
+	} else {
+		bcString := "Chua du dieu kien tot nghiep cap 3"
+		profileOld.BC = append(profileOld.BC, bcString)
+		profileJSONasBytes, err := json.Marshal(profileOld)
+		err = stub.PutState(userID, profileJSONasBytes)
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		return shim.Success([]byte(bcString))
+	}
+	return shim.Success(nil)
+}
+
+// Invoke --
 func (t *ProfileChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("user profile Invoke")
 	function, args := stub.GetFunctionAndParameters()
@@ -351,9 +404,12 @@ func (t *ProfileChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response 
 	} else if function == "getListProfileOfClass" {
 		// create new profile
 		return t.getListProfileOfClass(stub, args)
+	} else if function == "checkScore" {
+		// check score
+		return t.checkScore(stub, args)
 	}
 
-	return shim.Error("Invalid invoke function name. Expecting \"query\"")
+	return shim.Error("Invalid invoke function name")
 }
 
 func main() {

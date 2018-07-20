@@ -91,7 +91,7 @@ func (t *InformationChaincode) updateUser(stub shim.ChaincodeStubInterface, args
 	}
 
 	userOld := User{}
-	err = json.Unmarshal(userAsBytes, &userOld) //unmarshal it aka JSON.parse()
+	err = json.Unmarshal(userAsBytes, &userOld)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -177,8 +177,7 @@ func (t *InformationChaincode) deleteUser(stub shim.ChaincodeStubInterface, args
 	}
 	userID := args[0]
 
-	// to maintain the color~name index, we need to read the marble first and get its color
-	valAsbytes, err := stub.GetState(userID) //get the marble from chaincode state
+	valAsbytes, err := stub.GetState(userID)
 	if err != nil {
 		jsonResp = "{\"Error\":\"Failed to get state for " + userID + "\"}"
 		return shim.Error(jsonResp)
@@ -193,7 +192,7 @@ func (t *InformationChaincode) deleteUser(stub shim.ChaincodeStubInterface, args
 		return shim.Error(jsonResp)
 	}
 
-	err = stub.DelState(userID) //remove the marble from chaincode state
+	err = stub.DelState(userID)
 	if err != nil {
 		return shim.Error("Failed to delete state:" + err.Error())
 	}
@@ -218,7 +217,7 @@ func (t *InformationChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Respo
 		return t.initUser(stub, args)
 	}
 
-	return shim.Error("Invalid invoke function name. Expecting \"invoke\" \"delete\" \"query\"")
+	return shim.Error("Invalid invoke function name")
 }
 
 func main() {

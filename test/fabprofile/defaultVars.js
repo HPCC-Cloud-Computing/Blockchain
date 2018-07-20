@@ -5,8 +5,8 @@ let ordererPem = fs.readFileSync('/home/luatcoi/Project/src/Lab/Blockchain/test/
 module.exports = {
     PEER_PEM: peerPem,
     ORDERER_PEM: ordererPem,
-    ORDERER_DOMAIN: "orderer0.orgorderer",
-    PEER_DOMAIN: "peer0.org1",
+    ORDERER_DOMAIN: "orderer.example.com",
+    PEER_DOMAIN: "peer0.org1.example.com",
     TLS_ENABLED: "true",
     MSPID: "Org1MSP",
     CA_SERVER_NAME: "ca-org1"

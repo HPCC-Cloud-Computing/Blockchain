@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tao User Student</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+        <% var user=["User ID", "User Name", "Date Of Birth", "Sex User", "Address User"] %>
+        <% var user_inf=["user_id", "name_user", "date_of_brith", "sex_user", "address_user"] %>
+        <form class="form-horizontal" method="POST" action="/notifystudent">
+            <% for(var i=0; i< user.length; i++) { %>
+                <div class="form-group">
+                    <label for=<%= user_inf[i] %> class="col-sm-2 control-label"><%= user[i] %></label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id=<%= user_inf[i] %> name=<%= user_inf[i] %> placeholder=<%= user[i] %> >
+                    </div>
+                </div>
+            <% } %>
+                   
+    
+    
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </div>
+            </div>
+    
+    
+    
+        </form>
+       
+</body>
+
+</html>

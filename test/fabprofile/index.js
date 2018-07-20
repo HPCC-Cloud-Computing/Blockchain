@@ -8,33 +8,14 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 const program = require('commander');
-// var query = require('./query');
 
 'use strict';
-/*
-* Copyright IBM Corp All Rights Reserved
-*
-* SPDX-License-Identifier: Apache-2.0
-*/
-/*
- * Chaincode query
- */
+
 
 // cau hinh ejs
 app.set("view engine", "ejs");
 app.set("views", "./views");
 
-
-
-'use strict';
-/*
-* Copyright IBM Corp All Rights Reserved
-*
-* SPDX-License-Identifier: Apache-2.0
-*/
-/*
- * Chaincode query
- */
 var defaultConfig = require("./config");
 var path = require('path');
 
@@ -43,7 +24,7 @@ var path = require('path');
 var store_path = path.join(__dirname, 'hfc-key-store');
 const config = Object.assign({}, defaultConfig, {
     channelName: "mychannel",
-    user: "user2",
+    user: "user1",
     storePath: store_path
 
 });
@@ -54,9 +35,9 @@ var controller = require("./controller")(config);
 
 var request = {
     //targets : --- letting this default to the peers assigned to the channel
-    chaincodeId: "aaa1",
-    fcn: "getUserByID",
-    args: ['3012']
+    chaincodeId: "",
+    fcn: "",
+    args: ['']
 };
 
 // each method require different certificate of user
@@ -133,26 +114,30 @@ app.get("/home", function (req, res) {
     }
 });
 
-app.get("/ok", function(req, res){
-    var request = {
-        //targets: let default to the peer assigned to the client
-        chaincodeId: "aaa",
-        fcn: 'initUser',
-        args: ["aaa1","3010","Nguyen Ba Hung","25-06-97","Nam","Nghe An"]
-    };
-    // var request = {
-	// 	//targets: let default to the peer assigned to the client
-	// 	chaincodeId: 'aaa1',
-	// 	fcn: 'initUser',
-	// 	args: ["3010","Nguyen Ba Hung","25-06-97","Nam","Nghe An"],
-	// 	chainId: 'mychachannelNamennel',
-	// 	txId: tx_id
-	// };
+app.post("/notifychaincode",urlencodedParser ,function(req, res){
+    var user_profile= [];
+    var stringInput=[];
 
     
+    var school_pf_tag=["userid","lop","truong","namhoc","hieutruong","gvcn","toan","ly","hanhkiem","danhhieu","bangcap"];
+    
+    for(var i=0; i<school_pf_tag.length; i++){
+        
+        var sp = school_pf_tag[i];
+        user_profile[i]=req.body[sp];
+        console.log("ok test: ", user_profile);
+    }
+    stringInput=[user_profile[0],user_profile[1]+","+user_profile[2]+","+user_profile[3]+","+user_profile[4]+","+user_profile[5]+","+"Toan#"+user_profile[6]+"&Ly#"+user_profile[7]+","+user_profile[8]+","+user_profile[9],user_profile[10]];
+    console.log("string input", stringInput);
     // each method require different certificate of user
+
+
+    request.chaincodeId = "aaa2";
+    request.fcn = "initProfile";
+    request.args = stringInput;
+
     controller
-        .invoke("user2", request)
+        .invoke("user1", request)
         .then(results => {
             console.log(
                 "Send transaction promise and event listener promise have completed",
@@ -162,6 +147,47 @@ app.get("/ok", function(req, res){
         .catch(err => {
             console.error(err);
         });
+    
+    res.render("notify");
+});
+app.get("/createchaincode",urlencodedParser ,function(req, res){
+
+    res.render("create");
+});
+app.get("/createstudent",function(req, res){
+    res.render("student");
+});
+app.post("/notifystudent",urlencodedParser ,function(req, res){
+    var user_inf=["user_id", "name_user", "date_of_brith", "sex_user", "address_user"]
+    var user= [];
+
+    for(var i=0; i<user_inf.length; i++){
+        
+        var sp = user_inf[i];
+        user[i]=req.body[sp];
+        console.log("ok test: ", user);
+    }
+    console.log("string input", user);
+    // each method require different certificate of user
+
+
+    request.chaincodeId = "aaa1";
+    request.fcn = "initUser";
+    request.args = user;
+
+    controller
+        .invoke("user1", request)
+        .then(results => {
+            console.log(
+                "Send transaction promise and event listener promise have completed",
+                results
+            );
+        })
+        .catch(err => {
+            console.error(err);
+        });
+    
+    res.render("notify");
 });
 
 
