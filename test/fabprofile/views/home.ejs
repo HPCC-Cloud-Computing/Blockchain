@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quan ly danh ba hoc sinh</title>
+    <style type="text/css">.container {  
+        padding: 10px;
+        }
+         
+    .search-box {  
+        display: inline-block;  
+        width: 100%;  
+        border-radius: 3px;  
+        padding: 4px 55px 4px 15px;  
+        position: relative;  
+        background: #fff;  
+        border: 1px solid #ddd;  
+        -webkit-transition: all 200ms ease-in-out;  
+        -moz-transition: all 200ms ease-in-out;  
+        transition: all 200ms ease-in-out;
+    }
+         
+    .search-box.hovered, .search-box:hover, .search-box:active {  
+        border: 1px solid #aaa;
+    }
+         
+    .search-box input[type=text] { 
+         border: none;  
+        box-shadow: none;  
+        display: inline-block;  
+        padding: 0;  
+        background: transparent;
+    }
+         
+    .search-box input[type=text]:hover, .search-box input[type=text]:focus, .search-box input[type=text]:active {  
+        box-shadow: none;
+    }
+         
+    .search-box .search-btn {  
+        position: absolute;  
+        right: 2px;  
+        top: 2px;  
+        color: #aaa;  
+        border-radius: 3px;  
+        font-size: 21px;  
+        padding: 5px 10px 1px;  
+        -webkit-transition: all 200ms ease-in-out;  
+        -moz-transition: all 200ms ease-in-out;  
+        transition: all 200ms ease-in-out;
+    }
+         
+    .search-box .search-btn:hover {  
+        color: #fff;  
+        background-color: #8FBE00;
+    }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<% var user=["Address User", "Date Of Birth", "User Name", "Sex User", "User ID"] %>
+<% var user_inf=["address_user", "date_of_brith", "name_user", "sex_user", "user_id"] %>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">Quan ly danh ba hoc sinh</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="search-box">
+                    <form class="search-form" action="http://localhost:4200/home">
+                        <input class="form-control" placeholder="Nhap UserID" type="text" name="userid">
+                        <button class="btn btn-link search-btn">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </form> 
+                </div>
+            </div>
+            
+        </div>
+        <div class="information" style="margin-top: 100px">
+            <form>
+                <% for(var i=0; i<5; i++) { %>
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-2 col-form-label"><%= user[i] %></label>
+                        <div class="col-sm-10">
+                                <% if (locals.hung) { %>
+                                    <p><%= (Object.values(hung))[i]%></p>
+                                <% } %>
+                         
+                        </div>
+                      </div>
+                <% } %>       
+              </form>
+        </div>
+        <div class="row">
+            <div class=".col-md-3 .col-md-offset-3">
+                <form action="/home" method="get">
+                    <input type="hidden" name="userid" value="<%= hung.user_id %>" />
+                    <select name="class">
+                        <option selected>Choose</option>
+                        <option value=10>Class 10</option>
+                        <option value=11>Class 11</option>
+                        <option value=12>Class 12</option>
+                    </select>
+                    
+                    <input type="submit" value="Filter" />
+                </form>
+            </div>
+        </div>
+
+        <div class="show_score">
+                <% if (locals.classid) { %>
+                    <p>  <%- JSON.stringify(classid) %> </p>
+                <% } %>
+           
+        </div>
+    </div>
+</body>
+
+</html>

@@ -12,16 +12,53 @@ var Fabric_Client = require('fabric-client');
 var path = require('path');
 var util = require('util');
 var os = require('os');
+var config = require("./config");
 
 //
-var fabric_client = new Fabric_Client();
+//
+const fabric_client = new Fabric_Client();
+var channel = fabric_client.newChannel('mychannel');
+
+const grpcProtocol = config.tlsEnabled ? "grpcs://" : "grpc://";
+const peerConfig = config.tlsEnabled
+	? {
+		pem: Buffer.from(config.peerPem).toString(),
+		"ssl-target-name-override":
+		config.peerDomain || config.peerHost.split(":")[0]
+	}
+	: null;
+const peer = fabric_client.newPeer(
+	grpcProtocol + config.peerHost,
+	peerConfig
+);
+
+const ordererConfig = config.tlsEnabled
+	? {
+		pem: Buffer.from(config.ordererPem).toString(),
+		"ssl-target-name-override":
+		config.ordererDomain || config.ordererHost.split(":")[0]
+	}
+	: null;
+
+const orderer = fabric_client.newOrderer(
+	grpcProtocol + config.ordererHost,
+	ordererConfig
+);
+// const store_path = process.env.KEY_STORE_PATH;
+// const store_path = config.storePath;
+
+channel.addPeer(peer);
+channel.addOrderer(orderer);
+
+console.log("Peer: " + grpcProtocol + config.peerHost);
+console.log("Store path:" + store_path);
 
 // setup the fabric network
-var channel = fabric_client.newChannel('mychannel');
-var peer = fabric_client.newPeer('grpcs://localhost:7051');
-channel.addPeer(peer);
-var order = fabric_client.newOrderer('grpcs://localhost:7050')
-channel.addOrderer(order);
+// var channel = fabric_client.newChannel('mychannel');
+// var peer = fabric_client.newPeer('grpcs://localhost:7051', true);
+// channel.addPeer(peer);
+// var order = fabric_client.newOrderer('grpcs://localhost:7050', true);
+// channel.addOrderer(order);
 
 //
 var member_user = null;
@@ -42,13 +79,13 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	fabric_client.setCryptoSuite(crypto_suite);
 
 	// get the enrolled user from persistence, this user will sign all requests
-	return fabric_client.getUserContext('user1', true);
+	return fabric_client.getUserContext('user2', true);
 }).then((user_from_store) => {
 	if (user_from_store && user_from_store.isEnrolled()) {
-		console.log('Successfully loaded user1 from persistence');
+		console.log('Successfully loaded user2 from persistence');
 		member_user = user_from_store;
 	} else {
-		throw new Error('Failed to get user1.... run registerUser.js');
+		throw new Error('Failed to get user2.... run registerUser.js');
 	}
 
 	// get a transaction id object based on the current user assigned to fabric client
@@ -58,12 +95,21 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	// createCar chaincode function - requires 5 args, ex: args: ['CAR12', 'Honda', 'Accord', 'Black', 'Tom'],
 	// changeCarOwner chaincode function - requires 2 args , ex: args: ['CAR10', 'Dave'],
 	// must send the proposal to endorsing peers
+	
+	// var request = {
+	// 	//targets: let default to the peer assigned to the client
+	// 	chaincodeId: 'aaa2',
+	// 	fcn: 'initProfile',
+	// 	args: ["3012","10A1,Ha Huy Tap,2017-2018,Kante,Mbappe,Toan#9.3&Ly#9.5,Kha,Hoc sinh gioi tinh mon hoa hoc#Hoc sinh gioi tinh mon van","Tot nghiep cap 1#Tot nghiep cap 2"],
+	// 	chainId: 'mychannel',
+	// 	txId: tx_id
+	// };
 	var request = {
 		//targets: let default to the peer assigned to the client
-		chaincodeId: 'aaa',
+		chaincodeId: 'aaa1',
 		fcn: 'initUser',
-		args: ['aaa1','3012','Truong Van Luat','30-12-1996','Nam','Ha Tinh'],
-		chainId: 'mychannel',
+		args: ["3010","Nguyen Ba Hung","25-06-97","Nam","Nghe An"],
+		chainId: 'mychachannelNamennel',
 		txId: tx_id
 	};
 
@@ -71,6 +117,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	return channel.sendTransactionProposal(request);
 }).then((results) => {
 	var proposalResponses = results[0];
+	console.log("aaaa: ", proposalResponses)
 	var proposal = results[1];
 	let isProposalGood = false;
 	if (proposalResponses && proposalResponses[0].response &&

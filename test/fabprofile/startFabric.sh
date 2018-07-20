@@ -14,9 +14,9 @@ LANGUAGE=${1:-"golang"}
 CC_SRC_PATH1=github.com/user01/go/main_chaincode
 CC_SRC_PATH2=github.com/user01/go/chaincode_information
 CC_SRC_PATH3=github.com/user01/go/chaincode_school_profile
-if [ "$LANGUAGE" = "node" -o "$LANGUAGE" = "NODE" ]; then
-	CC_SRC_PATH=/opt/gopath/src/github.com/fabcar/node
-fi
+# if [ "$LANGUAGE" = "node" -o "$LANGUAGE" = "NODE" ]; then
+# 	CC_SRC_PATH=/opt/gopath/src/github.com/fabcar/node
+# fi
 
 # clean the keystore
 rm -rf ./hfc-key-store
@@ -35,4 +35,3 @@ docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/g
 docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp" cli peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n aaa -l "$LANGUAGE" -v 11.1 -c '{"Args":["init"]}' -P "OR ('Org1MSP.member','Org2MSP.member')"
 docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp" cli peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n aaa1 -l "$LANGUAGE" -v 11.1 -c '{"Args":["init"]}' -P "OR ('Org1MSP.member','Org2MSP.member')"
 docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp" cli peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n aaa2 -l "$LANGUAGE" -v 11.1 -c '{"Args":["init"]}' -P "OR ('Org1MSP.member','Org2MSP.member')"
-
