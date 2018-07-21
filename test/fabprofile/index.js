@@ -22,6 +22,13 @@ var path = require('path');
 
 
 var store_path = path.join(__dirname, 'hfc-key-store');
+
+
+
+/////////////////////////////////////////////////
+app.use(express.static('public'));
+
+
 const config = Object.assign({}, defaultConfig, {
     channelName: "mychannel",
     user: "user1",
@@ -114,6 +121,16 @@ app.get("/home", function (req, res) {
     }
 });
 
+app.get("/lecturer", function(req, res){
+    res.render("lecturer/index");
+});
+app.get("/school", function(req, res){
+    res.render("school/index");
+});
+app.get("/student", function(req, res){
+    res.render("student/index");
+});
+
 app.post("/notify/:id",urlencodedParser ,function(req, res){
     var id = req.params.id;
     console.log("id: ",id);
@@ -174,17 +191,18 @@ app.post("/notify/:id",urlencodedParser ,function(req, res){
     }
     res.render("notify");
 });
+
 app.get("/create/class10",urlencodedParser ,function(req, res){
-    res.render("createprofile10");
+    res.render("lecturer/createprofile10");
 });
 app.get("/create/class11",urlencodedParser ,function(req, res){
-    res.render("createprofile11");
+    res.render("lecturer/createprofile11");
 });
 app.get("/create/class12",urlencodedParser ,function(req, res){
-    res.render("createprofile12");
+    res.render("lecturer/createprofile12");
 });
 app.get("/createstudent",function(req, res){
-    res.render("student");
+    res.render("school/student");
 });
 app.post("/notifystudent",urlencodedParser ,function(req, res){
     var user_inf=["user_id", "name_user", "date_of_brith", "sex_user", "address_user"]
@@ -241,7 +259,7 @@ app.get("/updateuser", function(req, res){
                 student = checkobj.Record;
                 console.log("student: ", student);
 
-                res.render("update_user",{ student : student});
+                res.render("school/update_user",{ student : student});
             } else {
                 console.log("Loi khong tim thay");
                 res.render("404_notfound")
@@ -255,7 +273,7 @@ app.get("/updateuser", function(req, res){
 
     }
     else {
-        res.render("update_user");
+        res.render("school/update_user");
     }
 });
 
@@ -314,11 +332,14 @@ app.get("/deletestudent", function(req, res){
             });
         
     } else {
-        res.render("delete_student");
+        res.render("school/delete_student");
     }
 
 });
 
+app.get("/sogd", function(req, res){
+    res.render("sogd/index");
+})
 app.post("/createscoreexam", urlencodedParser, function(req, res){
     var monid=["user_id","mon1","mon2","mon3","mon4"];
     var input_score=[];
@@ -350,8 +371,9 @@ app.post("/createscoreexam", urlencodedParser, function(req, res){
             console.error(err);
         });  
 });
+
 app.get("/createscore", function(req, res){
-    res.render("create_score");
+    res.render("sogd/create_score");
 });
 
 app.get("/scoreexam", function(req, res){
@@ -377,7 +399,7 @@ app.get("/scoreexam", function(req, res){
                 student = checkobj.Record;
                 console.log("student: ", student);
 
-                res.render("get_score", {student : student});
+                res.render("student/get_score", {student : student});
             } else {
                 console.log("Loi khong tim thay");
                 res.render("404_notfound")
@@ -389,7 +411,7 @@ app.get("/scoreexam", function(req, res){
 
     }
     else {
-        res.render("get_score");
+        res.render("student/get_score");
     }
 });
 
@@ -415,7 +437,7 @@ app.get("/notifygrad",function(req, res){
             if (typeof checkobj !== "undefined") {
                
 
-                res.render("get_score", {bangcap : checkobj});
+                res.render("student/get_score", {bangcap : checkobj});
             } else {
                 console.log("Loi khong tim thay");
                 res.render("404_notfound")
@@ -427,7 +449,8 @@ app.get("/notifygrad",function(req, res){
 
     }
     else {
-        res.render("get_score");
+        res.render("student/get_score");
     }
 });
+
 app.listen(4200);
