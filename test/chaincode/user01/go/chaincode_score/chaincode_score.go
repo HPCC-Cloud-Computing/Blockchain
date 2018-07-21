@@ -75,7 +75,7 @@ func (t *ScoreChaincode) initScore(stub shim.ChaincodeStubInterface, args []stri
 		return shim.Error(err.Error())
 	}
 
-	// === Save user to state ===
+	// === Save score to state ===
 	err = stub.PutState(userID, scoreJSONasBytes)
 	if err != nil {
 		return shim.Error(err.Error())
@@ -176,6 +176,49 @@ func (t *ScoreChaincode) getScoreByID(stub shim.ChaincodeStubInterface, args []s
 	return shim.Success(queryResults)
 }
 
+func (t *ScoreChaincode) getValueScoreByID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+
+	if len(args) < 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+
+	userID := args[0]
+
+	queryString := fmt.Sprintf("{\"selector\":{\"user_id\":\"%s\"}}", userID)
+
+	queryResults, err := getValueQueryResultForQueryString(stub, queryString)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	return shim.Success(queryResults)
+}
+
+func getValueQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
+
+	fmt.Printf("- getValueQueryResultForQueryString queryString:\n%s\n", queryString)
+
+	resultsIterator, err := stub.GetQueryResult(queryString)
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	// buffer is a JSON array containing QueryRecords
+	var buffer bytes.Buffer
+
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+
+		buffer.WriteString(string(queryResponse.Value))
+	}
+	fmt.Printf("- getQueryResultForQueryString queryResult:\n%s\n", buffer.String())
+
+	return buffer.Bytes(), nil
+}
+
 func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
 
 	fmt.Printf("- getQueryResultForQueryString queryString:\n%s\n", queryString)
@@ -234,6 +277,9 @@ func (t *ScoreChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	} else if function == "initScore" {
 		// create new profile
 		return t.initScore(stub, args)
+	} else if function == "getValueScoreByID" {
+		// create new profile
+		return t.getValueScoreByID(stub, args)
 	}
 
 	return shim.Error("Invalid invoke function name")
