@@ -89,7 +89,7 @@ app.get("/home", function (req, res) {
                                     console.log("Lop 12: ", classid);
                                 }
                                 console.log("hung: ", hung1);
-                                res.render("home", { classid,hung: hung1 });
+                                res.render("home", { classid,hung: hung1,userclass });
 
                             })
                             .catch(err => {
@@ -114,29 +114,30 @@ app.get("/home", function (req, res) {
     }
 });
 
-app.post("/notifychaincode",urlencodedParser ,function(req, res){
+app.post("/notify/:id",urlencodedParser ,function(req, res){
+    var id = req.params.id;
+    console.log("id: ",id);
     var user_profile= [];
     var stringInput=[];
-
-    
     var school_pf_tag=["userid","lop","truong","namhoc","hieutruong","gvcn","toan","ly","hanhkiem","danhhieu","bangcap"];
-    
+
     for(var i=0; i<school_pf_tag.length; i++){
         
         var sp = school_pf_tag[i];
         user_profile[i]=req.body[sp];
         console.log("ok test: ", user_profile);
     }
-    stringInput=[user_profile[0],user_profile[1]+","+user_profile[2]+","+user_profile[3]+","+user_profile[4]+","+user_profile[5]+","+"Toan#"+user_profile[6]+"&Ly#"+user_profile[7]+","+user_profile[8]+","+user_profile[9],user_profile[10]];
-    console.log("string input", stringInput);
-    // each method require different certificate of user
+    if(id == 10){
+        stringInput=["aaa2",user_profile[0],user_profile[1]+","+user_profile[2]+","+user_profile[3]+","+user_profile[4]+","+user_profile[5]+","+"Toan#"+user_profile[6]+"&Ly#"+user_profile[7]+","+user_profile[8]+","+user_profile[9],user_profile[10]];
+        console.log("string input", stringInput);
+        // each method require different certificate of user
 
 
-    request.chaincodeId = "aaa2";
-    request.fcn = "initProfile";
-    request.args = stringInput;
+        request.chaincodeId = "aaa";
+        request.fcn = "initProfile";
+        request.args = stringInput;
 
-    controller
+        controller
         .invoke("user1", request)
         .then(results => {
             console.log(
@@ -147,12 +148,40 @@ app.post("/notifychaincode",urlencodedParser ,function(req, res){
         .catch(err => {
             console.error(err);
         });
-    
+
+    } else if (i==11 || i==12){
+        stringInput=["aaa2",user_profile[0],user_profile[1]+","+user_profile[2]+","+user_profile[3]+","+user_profile[4]+","+user_profile[5]+","+"Toan#"+user_profile[6]+"&Ly#"+user_profile[7]+","+user_profile[8]+","+user_profile[9],id];
+        console.log("string input", stringInput);
+        // each method require different certificate of user
+
+
+        request.chaincodeId = "aaa";
+        request.fcn = "updateProfile";
+        request.args = stringInput;
+
+        controller
+        .invoke("user1", request)
+        .then(results => {
+            console.log(
+                "Send transaction promise and event listener promise have completed",
+                results
+            );
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    }
     res.render("notify");
 });
-app.get("/createchaincode",urlencodedParser ,function(req, res){
-
-    res.render("create");
+app.get("/create/class10",urlencodedParser ,function(req, res){
+    res.render("createprofile10");
+});
+app.get("/create/class11",urlencodedParser ,function(req, res){
+    res.render("createprofile11");
+});
+app.get("/create/class12",urlencodedParser ,function(req, res){
+    res.render("createprofile12");
 });
 app.get("/createstudent",function(req, res){
     res.render("student");
@@ -190,5 +219,42 @@ app.post("/notifystudent",urlencodedParser ,function(req, res){
     res.render("notify");
 });
 
+app.get("/updateuser", function(req, res){
+    var student;
+    var id = req.query.userid;
+    console.log("id: ", id);
 
+    if (typeof id !== "undefined") {
+
+        request.chaincodeId = "aaa";
+        request.fcn = "getUserByID";
+        request.args = ["aaa1",id];
+        console.log(request);
+        
+        controller
+        .query("user1", request)
+        .then(ret => {
+            console.log( "Query results 23131: ",JSON.parse(ret.toString())[0]);
+
+            checkobj = JSON.parse(ret.toString())[0];
+            if (typeof checkobj !== "undefined") {
+                student = checkobj.Record;
+                console.log("student: ", student);
+                res.render("update_student", student);
+            } else {
+                console.log("Loi khong tim thay");
+                res.render("404_notfound")
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        });
+      
+
+
+    }
+    else {
+        res.render("update_user");
+    }
+});
 app.listen(4200);

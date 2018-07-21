@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>  
+    <% var school_profile=["UserID","Lop","Truong","Nam Hoc","Hieu Truong","Giao Vien","Toan","Ly","Hanh Kiem","Danh Hieu"] %>
+    <% var school_pf_tag=["userid","lop","truong","namhoc","hieutruong","gvcn","toan","ly","hanhkiem","danhhieu"] %>
+    <form class="form-horizontal" method="POST" action="/notify/11">
+        <% for(var i=0; i< school_profile.length; i++) { %>
+            <div class="form-group">
+                <label for=<%= school_pf_tag[i] %> class="col-sm-2 control-label"><%= school_profile[i] %></label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id=<%= school_pf_tag[i] %> name=<%= school_pf_tag[i] %> >
+                </div>
+            </div>
+        <% } %>
+               
+
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+        </div>
+
+
+
+    </form>
+
+</body>
+
+</html>

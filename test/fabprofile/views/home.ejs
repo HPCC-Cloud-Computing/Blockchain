@@ -68,6 +68,7 @@
             <div class="col-md-12">
                 <h1 class="text-center">Quan ly danh ba hoc sinh</h1>
             </div>
+                
         </div>
         <div class="row">
             <div class="col-md-6">
@@ -80,6 +81,19 @@
                     </form> 
                 </div>
             </div>
+            <div class="col-md-3 col-md-offset-3">
+                    <form action="/home" method="get">
+                        <input type="hidden" name="userid" value="<%= hung.user_id %>" />
+                        <select name="class">
+                            <option selected>Choose</option>
+                            <option value=10>Class 10</option>
+                            <option value=11>Class 11</option>
+                            <option value=12>Class 12</option>
+                        </select>
+                        
+                        <input type="submit" value="Filter" />
+                    </form>
+                </div>
             
         </div>
         <div class="information" style="margin-top: 100px">
@@ -97,27 +111,47 @@
                 <% } %>       
               </form>
         </div>
-        <div class="row">
-            <div class=".col-md-3 .col-md-offset-3">
-                <form action="/home" method="get">
-                    <input type="hidden" name="userid" value="<%= hung.user_id %>" />
-                    <select name="class">
-                        <option selected>Choose</option>
-                        <option value=10>Class 10</option>
-                        <option value=11>Class 11</option>
-                        <option value=12>Class 12</option>
-                    </select>
-                    
-                    <input type="submit" value="Filter" />
-                </form>
-            </div>
-        </div>
-
-        <div class="show_score">
+    
+        <% var school_profile=["Lop","Truong","Nam Hoc","Hieu Truong","Giao Vien","Toan","Ly","Hanh Kiem","Danh Hieu","Diem TB","Bang Cap"] %>
+        <% var school_pf_tag=["class_name","name_school","school_year","name_HT","name_GVCN","toan","ly","hk","dh","final_score","bc"] %>
+        <!-- <div class="show_score">
                 <% if (locals.classid) { %>
-                    <p>  <%- JSON.stringify(classid) %> </p>
+                    <p>  <p><%= (Object.values(classid))%></p> </p>
                 <% } %>
            
+        </div> -->
+
+        <div class="show_detail_score">
+            <form>
+                <% if (locals.classid) { %>
+                    <% for(var i=0; i<school_profile.length; i++) { %>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label"><%= school_profile[i] %></label>
+                            <div class="col-sm-10">
+                                    <%if (classid.Subjects!==null) { %>
+                                        <%if (i==5) { %>
+                                            <p><%= classid.Subjects[0].score_subject%></p>
+                                        <% } %>
+                                        <%if (i==6) { %>
+                                            <p><%= classid.Subjects[1].score_subject%></p>
+                                        <% } %>
+                                    <% } %>
+                                    
+                                    <%if (i==8 && classid.dh !== null) { %>
+                                        <p><%= classid.dh[0]%></p>
+                                    <% } %>
+                                    <%if (i==10) { %>
+                                        <p><%= userclass.bc[0] %></p>
+                                    <% } %>
+                                    <%if ([0,1,2,3,4,7,9].indexOf(i) > -1) { %>
+                                        <p><%= classid[school_pf_tag[i]]%></p>
+                                    <% } %>
+                            
+                            </div>
+                        </div>
+                    <% } %>
+                <% } %>     
+              </form>
         </div>
     </div>
 </body>
