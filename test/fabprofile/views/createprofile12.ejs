@@ -18,14 +18,14 @@
 </head>
 
 <body>  
-    <% var school_profile=["UserID","Lop","Truong","Nam Hoc","Hieu Truong","Giao Vien","Toan","Ly","Hanh Kiem","Danh Hieu","Bang Cap"] %>
-    <% var school_pf_tag=["userid","lop","truong","namhoc","hieutruong","gvcn","toan","ly","hanhkiem","danhhieu","bangcap"] %>
-    <form class="form-horizontal" method="POST" action="/notifychaincode">
+    <% var school_profile=["UserID","Lop","Truong","Nam Hoc","Hieu Truong","Giao Vien","Toan","Ly","Hanh Kiem","Danh Hieu"] %>
+    <% var school_pf_tag=["userid","lop","truong","namhoc","hieutruong","gvcn","toan","ly","hanhkiem","danhhieu"] %>
+    <form class="form-horizontal" method="POST" action="/notify/12">
         <% for(var i=0; i< school_profile.length; i++) { %>
             <div class="form-group">
                 <label for=<%= school_pf_tag[i] %> class="col-sm-2 control-label"><%= school_profile[i] %></label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id=<%= school_pf_tag[i] %> name=<%= school_pf_tag[i] %> placeholder="Lop">
+                    <input type="text" class="form-control" id=<%= school_pf_tag[i] %> name=<%= school_pf_tag[i] %> >
                 </div>
             </div>
         <% } %>
