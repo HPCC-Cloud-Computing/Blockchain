@@ -43,6 +43,10 @@ type Subject struct {
 	ScoreSubject string `json:"score_subject"`
 }
 
+type BCUser struct {
+	BCString string `json:"bc_string"`
+}
+
 // Init ProfileChaincode
 func (t *ProfileChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("user profile Init")
@@ -364,13 +368,19 @@ func (t *ProfileChaincode) checkScore(stub shim.ChaincodeStubInterface, args []s
 
 	if valueNew >= 5 {
 		bcString := "Da tot nghiep cap 3"
+		bcUser := BCUser{bcString}
 		profileOld.BC = append(profileOld.BC, bcString)
 		profileJSONasBytes, err := json.Marshal(profileOld)
 		err = stub.PutState(userID, profileJSONasBytes)
 		if err != nil {
 			return shim.Error(err.Error())
 		}
-		return shim.Success([]byte(bcString))
+
+		bcJSONasBytes, err := json.Marshal(bcUser)
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		return shim.Success(bcJSONasBytes)
 	} else {
 		bcString := "Chua du dieu kien tot nghiep cap 3"
 		profileOld.BC = append(profileOld.BC, bcString)
@@ -379,7 +389,12 @@ func (t *ProfileChaincode) checkScore(stub shim.ChaincodeStubInterface, args []s
 		if err != nil {
 			return shim.Error(err.Error())
 		}
-		return shim.Success([]byte(bcString))
+		bcUser := BCUser{bcString}
+		bcJSONasBytes, err := json.Marshal(bcUser)
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		return shim.Success(bcJSONasBytes)
 	}
 	return shim.Success(nil)
 }

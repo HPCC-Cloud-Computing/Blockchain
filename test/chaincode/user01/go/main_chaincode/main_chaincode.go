@@ -13,6 +13,14 @@ import (
 type MainChaincode struct {
 }
 
+type User struct {
+	UserID      string `json:"user_id"`
+	NameUser    string `json:"name_user"`
+	DateOfBrith string `json:"date_of_brith"`
+	SexUser     string `json:"sex_user"`
+	AddressUser string `json:"address_user"`
+}
+
 // Profile --
 type Profile struct {
 	UserID  string   `json:"user_id"`
@@ -33,6 +41,19 @@ type Class struct {
 	FinalScore string    `json:"final_score"`
 	HK         string    `json:"hk"`
 	DH         []string  `json:"dh"`
+}
+
+type ResponseCheck struct {
+	UserID      string `json:"user_id"`
+	NameUser    string `json:"name_user"`
+	DateOfBrith string `json:"date_of_brith"`
+	SexUser     string `json:"sex_user"`
+	AddressUser string `json:"address_user"`
+	BCString    string `json:"bc_string"`
+}
+
+type BCUser struct {
+	BCString string `json:"bc_string"`
 }
 
 // Subject --
@@ -376,7 +397,7 @@ func (t *MainChaincode) deleteScore(stub shim.ChaincodeStubInterface, args []str
 	channelName = ""
 
 	// Query new chaincode
-	queryArgs := toChaincodeArgs("initScore", userID)
+	queryArgs := toChaincodeArgs("deleteScore", userID)
 
 	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
 	if response.Status != shim.OK {
@@ -421,14 +442,15 @@ func (t *MainChaincode) checkScore(stub shim.ChaincodeStubInterface, args []stri
 		return shim.Error("Incorrect number of arguments. Expecting atleast 3")
 	}
 
-	chaincodeNameProfile := args[0]
-	chaincodeNameScore := args[1]
-	userID := args[2]
+	chaincodeNameUser := args[0]
+	chaincodeNameProfile := args[1]
+	chaincodeNameScore := args[2]
+	userID := args[3]
 
 	channelName = ""
 
 	// Query new chaincode
-	queryArgsScore := toChaincodeArgs("getScoreByID", userID)
+	queryArgsScore := toChaincodeArgs("getValueScoreByID", userID)
 
 	responseA := stub.InvokeChaincode(chaincodeNameScore, queryArgsScore, channelName)
 	if responseA.Status != shim.OK {
@@ -447,13 +469,45 @@ func (t *MainChaincode) checkScore(stub shim.ChaincodeStubInterface, args []stri
 	queryArgsProfile := toChaincodeArgs("checkScore", userID, score.AverScore)
 
 	responseB := stub.InvokeChaincode(chaincodeNameProfile, queryArgsProfile, channelName)
-	if responseA.Status != shim.OK {
+	if responseB.Status != shim.OK {
 		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", responseB.Payload)
 		fmt.Printf(errStr)
 		return shim.Error(errStr)
 	}
 
-	return shim.Success(responseB.Payload)
+	bcString := &BCUser{}
+
+	err = json.Unmarshal(responseB.Payload, bcString)
+	if err != nil {
+		jsonResp := "{\"Error\":\"Failed to decode JSONaaa of: " + userID + "\"}"
+		return shim.Error(jsonResp)
+	}
+
+	queryArgsUser := toChaincodeArgs("getValueUserByID", userID)
+
+	responseC := stub.InvokeChaincode(chaincodeNameUser, queryArgsUser, channelName)
+	if responseC.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", responseC.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	user := &User{}
+
+	err = json.Unmarshal(responseC.Payload, &user)
+	if err != nil {
+		jsonResp := "{\"Error\":\"Failed to decode JSON of: " + userID + "\"}"
+		return shim.Error(jsonResp)
+	}
+
+	checkScore := ResponseCheck{user.UserID, user.NameUser, user.DateOfBrith, user.SexUser, user.AddressUser, bcString.BCString}
+
+	dataJSONasBytes, err := json.Marshal(checkScore)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	return shim.Success(dataJSONasBytes)
 }
 
 func (t *MainChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
@@ -476,6 +530,14 @@ func (t *MainChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return t.getListProfileOfClass(stub, args)
 	} else if function == "checkScore" {
 		return t.checkScore(stub, args)
+	} else if function == "initScore" {
+		return t.initScore(stub, args)
+	} else if function == "updateScore" {
+		return t.updateScore(stub, args)
+	} else if function == "getScoreByID" {
+		return t.getScoreByID(stub, args)
+	} else if function == "deleteScore" {
+		return t.deleteScore(stub, args)
 	}
 	return shim.Success([]byte("Invalid invoke function name"))
 }
