@@ -454,7 +454,7 @@ func (t *MainChaincode) checkScore(stub shim.ChaincodeStubInterface, args []stri
 
 	responseA := stub.InvokeChaincode(chaincodeNameScore, queryArgsScore, channelName)
 	if responseA.Status != shim.OK {
-		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", responseA.Payload)
+		errStr := fmt.Sprintf("Failed to query chaincode profile1. Got error: %s", responseA.Payload)
 		fmt.Printf(errStr)
 		return shim.Error(errStr)
 	}
@@ -470,7 +470,7 @@ func (t *MainChaincode) checkScore(stub shim.ChaincodeStubInterface, args []stri
 
 	responseB := stub.InvokeChaincode(chaincodeNameProfile, queryArgsProfile, channelName)
 	if responseB.Status != shim.OK {
-		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", responseB.Payload)
+		errStr := fmt.Sprintf("Failed to query chaincode profile2. Got error: %s", responseB.Payload)
 		fmt.Printf(errStr)
 		return shim.Error(errStr)
 	}
@@ -487,7 +487,7 @@ func (t *MainChaincode) checkScore(stub shim.ChaincodeStubInterface, args []stri
 
 	responseC := stub.InvokeChaincode(chaincodeNameUser, queryArgsUser, channelName)
 	if responseC.Status != shim.OK {
-		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", responseC.Payload)
+		errStr := fmt.Sprintf("Failed to query chaincode profile3. Got error: %s", responseC.Payload)
 		fmt.Printf(errStr)
 		return shim.Error(errStr)
 	}

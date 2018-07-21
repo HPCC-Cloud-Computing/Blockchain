@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quan ly danh ba hoc sinh</title>
+    <style type="text/css">.container {  
+        padding: 10px;
+        }
+         
+    .search-box {  
+        display: inline-block;  
+        width: 100%;  
+        border-radius: 3px;  
+        padding: 4px 55px 4px 15px;  
+        position: relative;  
+        background: #fff;  
+        border: 1px solid #ddd;  
+        -webkit-transition: all 200ms ease-in-out;  
+        -moz-transition: all 200ms ease-in-out;  
+        transition: all 200ms ease-in-out;
+    }
+         
+    .search-box.hovered, .search-box:hover, .search-box:active {  
+        border: 1px solid #aaa;
+    }
+         
+    .search-box input[type=text] { 
+         border: none;  
+        box-shadow: none;  
+        display: inline-block;  
+        padding: 0;  
+        background: transparent;
+    }
+         
+    .search-box input[type=text]:hover, .search-box input[type=text]:focus, .search-box input[type=text]:active {  
+        box-shadow: none;
+    }
+         
+    .search-box .search-btn {  
+        position: absolute;  
+        right: 2px;  
+        top: 2px;  
+        color: #aaa;  
+        border-radius: 3px;  
+        font-size: 21px;  
+        padding: 5px 10px 1px;  
+        -webkit-transition: all 200ms ease-in-out;  
+        -moz-transition: all 200ms ease-in-out;  
+        transition: all 200ms ease-in-out;
+    }
+         
+    .search-box .search-btn:hover {  
+        color: #fff;  
+        background-color: #8FBE00;
+    }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">Quan ly danh ba hoc sinh</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="search-box">
+                    <form class="search-form" method="GET" action="http://localhost:4200/scoreexam">
+                        <input class="form-control" placeholder="Nhap UserID" type="text" name="userid">
+                        <button class="btn btn-link search-btn">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </form> 
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+                <% var mon=["UserID", "Subject 1", "Subject 2", "Subject 3", "Subject 4"] %>
+                <% var monid=["user_id","mon1","mon2","mon3","mon4"] %>
+            <% if(locals.student) {%>
+                <form class="form-horizontal" method="GET" action="/notifygrad">
+                    <% for(var i=0; i< mon.length; i++) { %>
+                        <div class="form-group">
+                            <label for=<%= monid[i] %> class="col-sm-2 col-sm-offset-1"><%= mon[i] %></label>
+                            <div class="col-sm-3">
+                                <% if(i == 0) { %>
+                                    <%= student.user_id %>
+                                <% } else {%>    
+                                    <%= student.GraduScore[i-1].score_subject %>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } %>
+            
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default" name="userid" value="<%=student.user_id%>">Submit</button>
+                        </div> 
+                    </div>
+                </form>
+            <% } %>
+            <% var user_bangcap=["User ID", "User Name", "Date Of Birth", "Sex User", "Address User","Certificate"] %>
+            <% var user_tag_bc=["user_id", "name_user", "date_of_brith", "sex_user", "address_user", "bc_string"] %>
+            <% if(locals.bangcap) {%>
+                <form class="form-horizontal" method="GET" action="/notifygrad">
+                    <% for(var i=0; i< user_bangcap.length; i++) { %>
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-offset-1"><%= user_bangcap[i] %></label>
+                            <div class="col-sm-3">
+                                <p><%= bangcap[user_tag_bc[i]] %></p>
+                            </div>
+                        </div>
+                    <% } %>
+                </form>
+                <%}%>
+        </div>
+ 
+    </div>
+</body>
+
+</html>

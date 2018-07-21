@@ -292,4 +292,142 @@ app.post("/notifyuser", urlencodedParser, function(req, res){
     
     
 });
+app.get("/deletestudent", function(req, res){
+    var id = req.query.userid;
+    console.log("id: ", id);
+    if(typeof id !== "undefined"){
+        request.chaincodeId = "aaa";
+        request.fcn = "deleteUser";
+        request.args = ["aaa1","aaa2",id];
+     console.log("request: ", request);
+        controller
+            .invoke("user1", request)
+            .then(results => {
+                console.log(
+                    "Send transaction promise and event listener promise have completed",
+                    results
+                );
+                res.render("notify");
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        
+    } else {
+        res.render("delete_student");
+    }
+
+});
+
+app.post("/createscoreexam", urlencodedParser, function(req, res){
+    var monid=["user_id","mon1","mon2","mon3","mon4"];
+    var input_score=[];
+    var arg_score=[];
+    for(var i=0; i<monid.length; i++){
+        var sp = monid[i];
+        input_score[i]=req.body[sp];
+        console.log("ok input score: ", input_score);
+    }
+    
+    arg_score=["aaa3",input_score[0],monid[1]+"#"+input_score[1]+"&"+monid[2]+"#"+input_score[2]+"&"+monid[3]+"#"+input_score[3]+"&"+monid[4]+"#"+input_score[4]];
+    // each method require different certificate of user
+
+
+    request.chaincodeId = "aaa";
+    request.fcn = "initScore";
+    request.args = arg_score;
+    console.log("request: ",request);
+    controller
+        .invoke("user1", request)
+        .then(results => {
+            console.log(
+                "Send transaction promise and event listener promise have completed",
+                results
+            );
+            res.render("notify");
+        })
+        .catch(err => {
+            console.error(err);
+        });  
+});
+app.get("/createscore", function(req, res){
+    res.render("create_score");
+});
+
+app.get("/scoreexam", function(req, res){
+    var student;
+    var id = req.query.userid;
+    console.log("id: ", id);
+
+    if ((typeof id) !== "undefined") {
+
+        request.chaincodeId = "aaa";
+        request.fcn = "getScoreByID";
+        request.args = ["aaa3",id];
+        console.log(request);
+        
+        controller
+        .query("user1", request)
+        .then(ret => {
+            console.log( "Query results 23131: ",JSON.parse(ret.toString())[0]);
+
+            checkobj = JSON.parse(ret.toString())[0];
+            console.log("checkobj: ", checkobj);
+            if (typeof checkobj !== "undefined") {
+                student = checkobj.Record;
+                console.log("student: ", student);
+
+                res.render("get_score", {student : student});
+            } else {
+                console.log("Loi khong tim thay");
+                res.render("404_notfound")
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    }
+    else {
+        res.render("get_score");
+    }
+});
+
+app.get("/notifygrad",function(req, res){
+    var student;
+    var id = req.query.userid;
+    console.log("id: ", id);
+
+    if ((typeof id) !== "undefined") {
+
+        request.chaincodeId = "aaa";
+        request.fcn = "checkScore";
+        request.args = ["aaa1","aaa2","aaa3",id];
+        console.log(request);
+        
+        controller
+        .query("user1", request)
+        .then(ret => {
+            console.log( "Query results 23131: ",JSON.parse(ret.toString()));
+
+            checkobj = JSON.parse(ret.toString());
+            console.log("checkobj: ", checkobj);
+            if (typeof checkobj !== "undefined") {
+               
+
+                res.render("get_score", {bangcap : checkobj});
+            } else {
+                console.log("Loi khong tim thay");
+                res.render("404_notfound")
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    }
+    else {
+        res.render("get_score");
+    }
+});
 app.listen(4200);

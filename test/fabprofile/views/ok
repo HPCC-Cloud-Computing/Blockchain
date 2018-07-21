@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quan ly danh ba hoc sinh</title>
+    <style type="text/css">
+        .container {
+            padding: 10px;
+        }
+
+        .search-box {
+            display: inline-block;
+            width: 100%;
+            border-radius: 3px;
+            padding: 4px 55px 4px 15px;
+            position: relative;
+            background: #fff;
+            border: 1px solid #ddd;
+            -webkit-transition: all 200ms ease-in-out;
+            -moz-transition: all 200ms ease-in-out;
+            transition: all 200ms ease-in-out;
+        }
+
+        .search-box.hovered,
+        .search-box:hover,
+        .search-box:active {
+            border: 1px solid #aaa;
+        }
+
+        .search-box input[type=text] {
+            border: none;
+            box-shadow: none;
+            display: inline-block;
+            padding: 0;
+            background: transparent;
+        }
+
+        .search-box input[type=text]:hover,
+        .search-box input[type=text]:focus,
+        .search-box input[type=text]:active {
+            box-shadow: none;
+        }
+
+        .search-box .search-btn {
+            position: absolute;
+            right: 2px;
+            top: 2px;
+            color: #aaa;
+            border-radius: 3px;
+            font-size: 21px;
+            padding: 5px 10px 1px;
+            -webkit-transition: all 200ms ease-in-out;
+            -moz-transition: all 200ms ease-in-out;
+            transition: all 200ms ease-in-out;
+        }
+
+        .search-box .search-btn:hover {
+            color: #fff;
+            background-color: #8FBE00;
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6" style="margin-top: 100px; margin-left: 100px">
+                <div class="search-box">
+                    <form class="search-form" action="http://localhost:4200/scoreexam">
+                        <input class="form-control" placeholder="Nhap UserID" type="text" name="userid">
+                        <button class="btn btn-link search-btn">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <% var mon=["UserID", "Subject 1", "Subject 2", "Subject 3", "Subject 4"] %>
+            <% var monid=["user_id","mon1","mon2","mon3","mon4"] %>
+
+            <!-- <% if (locals.student) %>
+                <form class="form-horizontal" method="GET" action="/notifygrad">
+                    <% for(var i=0; i< mon.length; i++) { %>
+                        <div class="form-group">
+                            
+                            <label for=<%= monid[i] %> class="col-sm-2 control-label">
+                                <%= mon[i] %> OK
+                            </label>
+                            <div class="col-sm-3">
+                                <% if (i==1) {%>
+                                    <%= student.user_id %>    
+                                <% } else {%>
+                                    <%= student.GraduScore[2] %>   
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">Xem ket qua tot nghiep</button>
+                        </div>
+                    </div>
+                </form>
+            <% } %> -->
+        </div>
+
+    </div>
+</body>
+
+</html>
