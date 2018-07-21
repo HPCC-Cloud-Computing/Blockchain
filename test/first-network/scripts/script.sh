@@ -30,7 +30,7 @@ echo "Channel name : "$CHANNEL_NAME
 
 createChannel() {
 
-	peer channel create -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx --tls --cafile $ORDERER_CA >&log.txt
+	peer channel create -o orderer.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx --tls --cafile $ORDERER_CA >&log.txt
 	
 	cat log.txt
 	sleep $DELAY

@@ -140,16 +140,15 @@ func (t *ProfileChaincode) initProfile(stub shim.ChaincodeStubInterface, args []
 
 func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
-	//   0         1	   2      3
-	// "userID", "class", "bc" "level"
-	if len(args) < 4 {
-		return shim.Error("Incorrect number of arguments. Expecting 4")
+	//   0         1	      2
+	// "userID", "class",  "level"
+	if len(args) < 3 {
+		return shim.Error("Incorrect number of arguments. Expecting 3")
 	}
 
 	userID := args[0]
 	classNew := args[1]
-	bc := args[2]
-	level := args[3]
+	level := args[2]
 
 	fmt.Println("- start updateProfile ", userID)
 
@@ -208,20 +207,15 @@ func (t *ProfileChaincode) updateProfile(stub shim.ChaincodeStubInterface, args 
 	}
 
 	class := Class{className, nameSchool, schoolYear, nameHT, nameGVCN, listSubjectNew, strconv.FormatFloat(finalScore, 'f', 2, 64), hk, dhNew}
-	var bcNew []string
-
-	for _, value := range strings.Split(bc, "#") {
-		bcNew = append(bcNew, value)
-	}
 
 	var profileNew *Profile
 
 	if level == "10" {
-		profileNew = &Profile{userID, class, profileOld.Class11, profileOld.Class12, bcNew}
+		profileNew = &Profile{userID, class, profileOld.Class11, profileOld.Class12, profileOld.BC}
 	} else if level == "11" {
-		profileNew = &Profile{userID, profileOld.Class10, class, profileOld.Class12, bcNew}
+		profileNew = &Profile{userID, profileOld.Class10, class, profileOld.Class12, profileOld.BC}
 	} else {
-		profileNew = &Profile{userID, profileOld.Class10, profileOld.Class11, class, bcNew}
+		profileNew = &Profile{userID, profileOld.Class10, profileOld.Class11, class, profileOld.BC}
 	}
 
 	profileJSONasBytes, _ := json.Marshal(profileNew)
@@ -344,11 +338,12 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 
 func (t *ProfileChaincode) checkScore(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 
-	if len(args) < 1 {
-		return shim.Error("Incorrect number of arguments. Expecting 1")
+	if len(args) < 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 
 	userID := args[0]
+	averScore := args[1]
 
 	profileAsBytes, err := stub.GetState(userID)
 	if err != nil {
@@ -363,8 +358,11 @@ func (t *ProfileChaincode) checkScore(stub shim.ChaincodeStubInterface, args []s
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	value, _ := strconv.Atoi(profileOld.Class12.FinalScore)
-	if value >= 5 {
+	value, _ := strconv.ParseFloat(profileOld.Class12.FinalScore, 10)
+	averScoreNew, _ := strconv.ParseFloat(averScore, 10)
+	valueNew := (value + averScoreNew) / 2
+
+	if valueNew >= 5 {
 		bcString := "Da tot nghiep cap 3"
 		profileOld.BC = append(profileOld.BC, bcString)
 		profileJSONasBytes, err := json.Marshal(profileOld)

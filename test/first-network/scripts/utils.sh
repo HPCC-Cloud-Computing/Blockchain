@@ -1,10 +1,10 @@
 
 # This is a collection of bash functions used by different scripts
 
-ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-PEER0_ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-PEER0_ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-PEER0_ORG3_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
+ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/com/orderers/orderer.com/msp/tlscacerts/tlsca.com-cert.pem
+PEER0_ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt
+PEER0_ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.com/peers/peer0.org2.com/tls/ca.crt
+PEER0_ORG3_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.com/peers/peer0.org3.com/tls/ca.crt
 
 # verify the result of the end-to-end test
 verifyResult() {
@@ -22,20 +22,20 @@ setGlobals() {
   if [ $ORG -eq 1 ]; then
     CORE_PEER_LOCALMSPID="Org1MSP"
     CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
-    CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp
     if [ $PEER -eq 0 ]; then
-      CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+      CORE_PEER_ADDRESS=peer0.org1.com:7051
     else
-      CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+      CORE_PEER_ADDRESS=peer1.org1.com:7051
     fi
   elif [ $ORG -eq 2 ]; then
     CORE_PEER_LOCALMSPID="Org2MSP"
     CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
-    CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+    CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.com/users/Admin@org2.com/msp
     if [ $PEER -eq 0 ]; then
-      CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+      CORE_PEER_ADDRESS=peer0.org2.com:7051
     else
-      CORE_PEER_ADDRESS=peer1.org2.example.com:7051
+      CORE_PEER_ADDRESS=peer1.org2.com:7051
     fi
   else
     echo "================== ERROR !!! ORG Unknown =================="
@@ -51,7 +51,7 @@ updateAnchorPeers() {
   ORG=$2
   setGlobals $PEER $ORG
 
-  peer channel update -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls --cafile $ORDERER_CA >&log.txt
+  peer channel update -o orderer.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls --cafile $ORDERER_CA >&log.txt
    
   cat log.txt
   
@@ -85,57 +85,32 @@ installChaincode() {
   ORG=$2
   setGlobals $PEER $ORG
 
-  peer chaincode install -n aaa -v 14.1 -p github.com/chaincode/user01/go/main_chaincode >&log1.txt
+  peer chaincode install -n aaa -v 14.2 -p github.com/chaincode/user01/go/main_chaincode >&log1.txt
   cat log1.txt
 
-  peer chaincode install -n aaa1 -v 14.1 -p github.com/chaincode/user01/go/chaincode_information >&log2.txt
+  peer chaincode install -n aaa1 -v 14.2 -p github.com/chaincode/user01/go/chaincode_information >&log2.txt
   cat log2.txt
 
-  peer chaincode install -n aaa2 -v 14.1 -p github.com/chaincode/user01/go/chaincode_school_profile >&log3.txt
+  peer chaincode install -n aaa2 -v 14.2 -p github.com/chaincode/user01/go/chaincode_school_profile >&log3.txt
   cat log3.txt
+
+  peer chaincode install -n aaa3 -v 14.2 -p github.com/chaincode/user01/go/chaincode_score >&log4.txt
+  cat log4.txt
 }
 
 instantiateChaincode() {
 
   export CHANNEL_NAME=mychannel
 
-  peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa -v 14.1 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log1.txt
+  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa -v 14.2 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log1.txt
   cat log1.txt
   
-  peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa1 -v 14.1 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log2.txt
+  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa1 -v 14.2 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log2.txt
   cat log2.txt
 
-  peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa2 -v 14.1 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log3.txt
+  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa2 -v 14.2 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log3.txt
   cat log3.txt
-}
 
-upgradeChaincode() {
-  PEER=$1
-  ORG=$2
-  setGlobals $PEER $ORG
-
-  peer chaincode upgrade -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n users -v 2.0 -c '{"Args":["init","a","90","b","210"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
-  
-  cat log.txt
-}
-
-chaincodeInvoke() {
-
-  USER_ID = $1
-  USER_NAME = $2
-  PHONE = $3
-  EMAIL = $4
-  
-  peer chaincode invoke -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n users -c '{"Args":[$FUCN_NAME,$USER_ID,$NAME,$PHONE, $EMAIL]}' >&log.txt
-  cat log.txt
-}
-
-chaincodeQuery() {
-  PEER=$1
-  ORG=$2
-  setGlobals $PEER $ORG
-  echo "===================== Querying on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME'... ===================== "
-  
-  peer chaincode query -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n users -c '{"Args":[$USER_ID]}' >&log.txt
-  cat log.txt
+  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa3 -v 14.2 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log4.txt
+  cat log4.txt
 }

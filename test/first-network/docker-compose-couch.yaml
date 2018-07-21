@@ -24,7 +24,7 @@ services:
     networks:
       - byfn
 
-  peer0.org1.example.com:
+  peer0.org1.com:
     environment:
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
@@ -51,7 +51,7 @@ services:
     networks:
       - byfn
 
-  peer1.org1.example.com:
+  peer1.org1.com:
     environment:
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
@@ -78,7 +78,7 @@ services:
     networks:
       - byfn
 
-  peer0.org2.example.com:
+  peer0.org2.com:
     environment:
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb2:5984
@@ -105,7 +105,7 @@ services:
     networks:
       - byfn
 
-  peer1.org2.example.com:
+  peer1.org2.com:
     environment:
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb3:5984

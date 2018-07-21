@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -10,6 +11,40 @@ import (
 
 // MainChaincode --
 type MainChaincode struct {
+}
+
+// Profile --
+type Profile struct {
+	UserID  string   `json:"user_id"`
+	Class10 Class    `json:"class_10"`
+	Class11 Class    `json:"class_11"`
+	Class12 Class    `json:"class_12"`
+	BC      []string `json:"bc"`
+}
+
+// Class --
+type Class struct {
+	ClassName  string    `json:"class_name"`
+	NameSchool string    `json:"name_school"`
+	SchoolYear string    `json:"school_year"`
+	NameHT     string    `json:"name_HT"`
+	NameGVCN   string    `json:"name_GVCN"`
+	Subjects   []Subject `ison:"subjects"`
+	FinalScore string    `json:"final_score"`
+	HK         string    `json:"hk"`
+	DH         []string  `json:"dh"`
+}
+
+// Subject --
+type Subject struct {
+	NameSubject  string `json:"name_subject"`
+	ScoreSubject string `json:"score_subject"`
+}
+
+type Score struct {
+	UserID     string    `json:"user_id"`
+	GraduScore []Subject `json: "gradu_score"`
+	AverScore  string    `json: "aver_score"`
 }
 
 func toChaincodeArgs(args ...string) [][]byte {
@@ -105,8 +140,8 @@ func (t *MainChaincode) updateProfile(stub shim.ChaincodeStubInterface, args []s
 	var channelName string
 	var queryArgs [][]byte
 
-	if len(args) < 5 {
-		return shim.Error("Incorrect number of arguments. Expecting atleast 5")
+	if len(args) < 4 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 4")
 	}
 
 	chaincodeName := args[0]
@@ -117,10 +152,9 @@ func (t *MainChaincode) updateProfile(stub shim.ChaincodeStubInterface, args []s
 	functionName := "updateProfile"
 	userID := args[1]
 	class := args[2]
-	bc := args[3]
-	level := args[4]
+	level := args[3]
 
-	queryArgs = toChaincodeArgs(functionName, userID, class, bc, level)
+	queryArgs = toChaincodeArgs(functionName, userID, class, level)
 
 	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
 	if response.Status != shim.OK {
@@ -277,7 +311,59 @@ func (t *MainChaincode) getListProfileOfClass(stub shim.ChaincodeStubInterface, 
 	return shim.Success(response.Payload)
 }
 
-func (t *MainChaincode) checkScore(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *MainChaincode) initScore(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var channelName string
+
+	if len(args) < 3 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 3")
+	}
+
+	chaincodeName := args[0]
+	userID := args[1]
+	score := args[2]
+
+	channelName = ""
+
+	// Query new chaincode
+	queryArgs := toChaincodeArgs("initScore", userID, score)
+
+	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
+	if response.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", response.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	return shim.Success(nil)
+}
+
+func (t *MainChaincode) updateScore(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var channelName string
+
+	if len(args) < 3 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 3")
+	}
+
+	chaincodeName := args[0]
+	userID := args[1]
+	score := args[2]
+
+	channelName = ""
+
+	// Query new chaincode
+	queryArgs := toChaincodeArgs("updateScore", userID, score)
+
+	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
+	if response.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", response.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	return shim.Success(nil)
+}
+
+func (t *MainChaincode) deleteScore(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var channelName string
 
 	if len(args) < 2 {
@@ -290,7 +376,32 @@ func (t *MainChaincode) checkScore(stub shim.ChaincodeStubInterface, args []stri
 	channelName = ""
 
 	// Query new chaincode
-	queryArgs := toChaincodeArgs("checkScore", userID)
+	queryArgs := toChaincodeArgs("initScore", userID)
+
+	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
+	if response.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", response.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	return shim.Success(nil)
+}
+
+func (t *MainChaincode) getScoreByID(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var channelName string
+
+	if len(args) < 2 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 2")
+	}
+
+	chaincodeName := args[0]
+	userID := args[1]
+
+	channelName = ""
+
+	// Query new chaincode
+	queryArgs := toChaincodeArgs("getScoreByID", userID)
 
 	response := stub.InvokeChaincode(chaincodeName, queryArgs, channelName)
 	if response.Status != shim.OK {
@@ -300,6 +411,49 @@ func (t *MainChaincode) checkScore(stub shim.ChaincodeStubInterface, args []stri
 	}
 
 	return shim.Success(response.Payload)
+}
+
+func (t *MainChaincode) checkScore(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var channelName string
+	var err error
+
+	if len(args) < 3 {
+		return shim.Error("Incorrect number of arguments. Expecting atleast 3")
+	}
+
+	chaincodeNameProfile := args[0]
+	chaincodeNameScore := args[1]
+	userID := args[2]
+
+	channelName = ""
+
+	// Query new chaincode
+	queryArgsScore := toChaincodeArgs("getScoreByID", userID)
+
+	responseA := stub.InvokeChaincode(chaincodeNameScore, queryArgsScore, channelName)
+	if responseA.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", responseA.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	score := &Score{}
+
+	err = json.Unmarshal(responseA.Payload, &score)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	queryArgsProfile := toChaincodeArgs("checkScore", userID, score.AverScore)
+
+	responseB := stub.InvokeChaincode(chaincodeNameProfile, queryArgsProfile, channelName)
+	if responseA.Status != shim.OK {
+		errStr := fmt.Sprintf("Failed to query chaincode profile. Got error: %s", responseB.Payload)
+		fmt.Printf(errStr)
+		return shim.Error(errStr)
+	}
+
+	return shim.Success(responseB.Payload)
 }
 
 func (t *MainChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
