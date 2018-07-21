@@ -240,7 +240,8 @@ app.get("/updateuser", function(req, res){
             if (typeof checkobj !== "undefined") {
                 student = checkobj.Record;
                 console.log("student: ", student);
-                res.render("update_student", student);
+
+                res.render("update_user",{ student : student});
             } else {
                 console.log("Loi khong tim thay");
                 res.render("404_notfound")
@@ -256,5 +257,38 @@ app.get("/updateuser", function(req, res){
     else {
         res.render("update_user");
     }
+});
+
+app.post("/notifyuser", urlencodedParser, function(req, res){
+    var user_inf=["user_id", "name_user", "date_of_brith", "sex_user", "address_user"]
+    var user= ["aaa1"];
+
+    for(var i=0; i<user_inf.length; i++){
+        
+        var sp = user_inf[i];
+        user[i+1]=req.body[sp];
+        console.log("ok test: ", user);
+    }
+    console.log("string input", user);
+    // each method require different certificate of user
+
+
+    request.chaincodeId = "aaa";
+    request.fcn = "updateUser";
+    request.args = user;
+
+    controller
+        .invoke("user1", request)
+        .then(results => {
+            console.log(
+                "Send transaction promise and event listener promise have completed",
+                results
+            );
+        })
+        .catch(err => {
+            console.error(err);
+        });
+    
+    res.render("notify");
 });
 app.listen(4200);

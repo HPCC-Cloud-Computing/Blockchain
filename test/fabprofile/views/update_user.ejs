@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Update User</title>
+    <title>Quan ly danh ba hoc sinh</title>
     <style type="text/css">
         .container {
             padding: 10px;
@@ -62,15 +62,11 @@
             background-color: #8FBE00;
         }
     </style>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
+<% var user=["Address User", "Date Of Birth", "User Name", "Gender", "User ID"] %>
+<% var user_inf=["address_user", "date_of_brith", "name_user", "sex_user", "user_id"] %>
 
 <body>
     <div class="container">
@@ -87,18 +83,18 @@
             </div>
         </div>
         <div class="row">
-            <!-- <% var user=["User ID", "User Name", "Date Of Birth", "Sex User", "Address User"] %>
+            <% var user=["User ID", "User Name", "Date Of Birth", "Sex User", "Address User"] %>
             <% var user_inf=["user_id", "name_user", "date_of_brith", "sex_user", "address_user"] %>
-                     -->
-            <!-- <% if (locals.student) { %>
-                <form class="form-horizontal" method="POST" action="/notifystudent">
+                    
+            <% if (locals.student) { %>
+                <form class="form-horizontal" method="POST" action="/notifyuser">
                     <% for(var i=0; i< user.length; i++) { %>
                         <div class="form-group">
-                            <label for=<%=u ser_inf[i] %> class="col-sm-2 control-label">
+                            <label for=<%= user_inf[i] %> class="col-sm-2 control-label">
                                 <%= user[i] %>
                             </label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id=<%=u ser_inf[i] %> name=<%= user_inf[i] %> placeholder=<%= user[i] %> >
+                                <input type="text" class="form-control" id=<%=user_inf[i] %> name=<%= user_inf[i] %> value=" <%= student[user_inf[i]] %> " >
                             </div>
                         </div>
                     <% } %>
@@ -109,8 +105,10 @@
                         </div>
                     </div>
                 </form>
-            <% } %> -->
+            <% } %>
+            
         </div>
+
     </div>
 </body>
 
