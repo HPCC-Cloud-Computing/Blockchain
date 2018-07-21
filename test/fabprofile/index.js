@@ -188,19 +188,19 @@ app.get("/createstudent",function(req, res){
 });
 app.post("/notifystudent",urlencodedParser ,function(req, res){
     var user_inf=["user_id", "name_user", "date_of_brith", "sex_user", "address_user"]
-    var user= [];
+    var user= ["aaa1"];
 
     for(var i=0; i<user_inf.length; i++){
         
         var sp = user_inf[i];
-        user[i]=req.body[sp];
+        user[i+1]=req.body[sp];
         console.log("ok test: ", user);
     }
     console.log("string input", user);
     // each method require different certificate of user
 
 
-    request.chaincodeId = "aaa1";
+    request.chaincodeId = "aaa";
     request.fcn = "initUser";
     request.args = user;
 
@@ -284,11 +284,12 @@ app.post("/notifyuser", urlencodedParser, function(req, res){
                 "Send transaction promise and event listener promise have completed",
                 results
             );
+            res.render("notify");
         })
         .catch(err => {
             console.error(err);
         });
     
-    res.render("notify");
+    
 });
 app.listen(4200);

@@ -245,7 +245,7 @@ module.exports = function(config) {
                     });
                 })
                 .then(results => {
-                    // console.log("results:", results);
+                    console.log("results:", results);
 
                     var proposalResponses = results[0];
                     var proposal = results[1];
