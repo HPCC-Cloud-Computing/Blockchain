@@ -27,6 +27,57 @@
   <![endif]-->
 
     <!-- Google Font -->
+    <style type="text/css">.container {  
+        padding: 10px;
+        }
+         
+    .search-box {  
+        display: inline-block;  
+        width: 100%;  
+        border-radius: 3px;  
+        padding: 4px 55px 4px 15px;  
+        position: relative;  
+        background: #fff;  
+        border: 1px solid #ddd;  
+        -webkit-transition: all 200ms ease-in-out;  
+        -moz-transition: all 200ms ease-in-out;  
+        transition: all 200ms ease-in-out;
+    }
+         
+    .search-box.hovered, .search-box:hover, .search-box:active {  
+        border: 1px solid #aaa;
+    }
+         
+    .search-box input[type=text] { 
+         border: none;  
+        box-shadow: none;  
+        display: inline-block;  
+        padding: 0;  
+        background: transparent;
+    }
+         
+    .search-box input[type=text]:hover, .search-box input[type=text]:focus, .search-box input[type=text]:active {  
+        box-shadow: none;
+    }
+         
+    .search-box .search-btn {  
+        position: absolute;  
+        right: 2px;  
+        top: 2px;  
+        color: #aaa;  
+        border-radius: 3px;  
+        font-size: 21px;  
+        padding: 5px 10px 1px;  
+        -webkit-transition: all 200ms ease-in-out;  
+        -moz-transition: all 200ms ease-in-out;  
+        transition: all 200ms ease-in-out;
+    }
+         
+    .search-box .search-btn:hover {  
+        color: #fff;  
+        background-color: #8FBE00;
+    }
+    </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 
@@ -198,76 +249,106 @@
             <hr/>
             <section class="content">
                 <div class="container-fluid">
-                    <br/>
-                    <div class="box">
+                        <% var user=["Address User", "Date Of Birth", "User Name", "Gender", "User ID"] %>
+                        <% var user_inf=["address_user", "date_of_brith", "name_user", "sex_user", "user_id"] %>
+                        
+                    <div class="container">
                         <div class="row">
-                                <div class="container-fluid">
-                                        <br/>
-                                        <!-- <div class="clearfix"></div> -->
-                                        <div class="container-fluid col-md-6 col-md-offset-2">
-                                            <form method="GET" action="http://localhost:4200/scoreexam">
-                                                <div class="form-group">
-                                                    <label for="userid">Nhập UserID</label>
-                        
-                                                    <input type="text" class="form-control" id="userid " name="userid" required="required">
-                                                    <button type="submit" class="btn btn-default">Submit</button>
-                                                </div>
-                                                
-                        
-                                            </form>
-                                        </div>
-                                        
-                                    </div>
+                            <div class="col-md-12">
+                                <h1 class="text-center">Quan ly hoc ba hoc sinh</h1>
+                            </div>
+                                
                         </div>
-
                         <div class="row">
-                            <% var mon=["UserID", "Subject 1", "Subject 2", "Subject 3", "Subject 4"] %>
-                                <% var monid=["user_id","mon1","mon2","mon3","mon4"] %>
-                                    <% if(locals.student) {%>
-                                        <form class="form-horizontal" method="GET" action="/notifygrad">
-                                            <% for(var i=0; i< mon.length; i++) { %>
-                                                <div class="form-group">
-                                                    <label for=<%=monid[i] %> class="col-sm-2 col-sm-offset-1">
-                                                        <%= mon[i] %>
-                                                    </label>
-                                                    <div class="col-sm-3">
-                                                        <% if(i == 0) { %>
-                                                            <%= student.user_id %>
-                                                                <% } else {%>
-                                                                    <%= student.GraduScore[i-1].score_subject %>
-                                                                        <% } %>
-                                                    </div>
-                                                </div>
+                            <div class="col-md-6">
+                                <div class="search-box">
+                                    <form class="search-form" action="http://localhost:4200/home">
+                                        <input class="form-control" placeholder="Nhap UserID" type="text" name="userid">
+                                        <button class="btn btn-link search-btn">
+                                            <i class="glyphicon glyphicon-search"></i>
+                                        </button>
+                                    </form> 
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-md-offset-3">
+                                    <form action="/home" method="get">
+                                        <input type="hidden" name="userid" value="<%= hung.user_id %>" />
+                                        <select name="class">
+                                            <option selected>Choose</option>
+                                            <option value=10>Class 10</option>
+                                            <option value=11>Class 11</option>
+                                            <option value=12>Class 12</option>
+                                        </select>
+                                        
+                                        <input type="submit" value="Filter" />
+                                    </form>
+                                </div>
+                            
+                        </div>
+                        <div class="information" style="margin-top: 100px">
+                            <form>
+                                <% for(var i=0; i<5; i++) { %>
+                                    <div class="form-group row">
+                                        <label for="staticEmail" class="col-sm-2 col-form-label"><%= user[i] %></label>
+                                        <div class="col-sm-10">
+                                                <% if (locals.hung) { %>
+                                                    <p><%= (Object.values(hung))[i]%></p>
                                                 <% } %>
-
-                                                    <div class="form-group">
-                                                        <div class="col-sm-offset-2 col-sm-10">
-                                                            <button type="submit" class="btn btn-default" name="userid" value="<%=student.user_id%>">Submit</button>
-                                                        </div>
-                                                    </div>
-                                        </form>
-                                        <% } %>
-                                            <% var user_bangcap=["User ID", "User Name", "Date Of Birth", "Sex User", "Address User","Certificate"] %>
-                                                <% var user_tag_bc=["user_id", "name_user", "date_of_brith", "sex_user", "address_user", "bc_string"] %>
-                                                    <% if(locals.bangcap) {%>
-                                                        <form class="form-horizontal" method="GET" action="/notifygrad">
-                                                            <% for(var i=0; i< user_bangcap.length; i++) { %>
-                                                                <div class="form-group">
-                                                                    <label class="col-sm-2 col-sm-offset-1">
-                                                                        <%= user_bangcap[i] %>
-                                                                    </label>
-                                                                    <div class="col-sm-3">
-                                                                        <p>
-                                                                            <%= bangcap[user_tag_bc[i]] %>
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <% } %>
-                                                        </form>
-                                                        <%}%>
+                                         
+                                        </div>
+                                      </div>
+                                <% } %>       
+                              </form>
+                        </div>
+                    
+                        <% var school_profile=["Lop","Truong","Nam Hoc","Hieu Truong","Giao Vien","Toan","Ly","Hanh Kiem","Danh Hieu","Diem TB","Bang Cap"] %>
+                        <% var school_pf_tag=["class_name","name_school","school_year","name_HT","name_GVCN","toan","ly","hk","dh","final_score","bc"] %>
+                        <!-- <div class="show_score">
+                                <% if (locals.classid) { %>
+                                    <p>  <p><%= (Object.values(classid))%></p> </p>
+                                <% } %>
+                           
+                        </div> -->
+                
+                        <div class="show_detail_score">
+                            <form>
+                                <% if (locals.classid) { %>
+                                    <% for(var i=0; i<school_profile.length; i++) { %>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label"><%= school_profile[i] %></label>
+                                            <div class="col-sm-10">
+                                                    <%if (classid.Subjects!==null) { %>
+                                                        <%if (i==5) { %>
+                                                            <p><%= classid.Subjects[0].score_subject%></p>
+                                                        <% } %>
+                                                        <%if (i==6) { %>
+                                                            <p><%= classid.Subjects[1].score_subject%></p>
+                                                        <% } %>
+                                                    <% } %>
+                                                    
+                                                    <%if (i==8 && classid.dh !== null) { %>
+                                                        <p><%= classid.dh[0]%></p>
+                                                    <% } %>
+                                                    <%if (i==10) { %>
+                                                        <p><%= userclass.bc[0] %></p>
+                                                    <% } %>
+                                                    <%if ([0,1,2,3,4,7,9].indexOf(i) > -1) { %>
+                                                        <p><%= classid[school_pf_tag[i]]%></p>
+                                                    <% } %>
+                                            
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                <% } else { %>
+                                <p style="color: red">
+                                    <% if(locals.thongbao) {%>
+                                        <%= thongbao %>
+                                    <% } %>
+                                </p>    
+                                <% } %>
+                              </form>
                         </div>
                     </div>
-
                 </div>
                 <!-- <div style="height: 20px;"></div> -->
             </section>

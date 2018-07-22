@@ -5,7 +5,7 @@ var app = express();
 
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
-
+var thongbao;
 
 const program = require('commander');
 
@@ -49,6 +49,7 @@ var request = {
 
 // each method require different certificate of user
 app.get("/home", function (req, res) {
+    
     var hung1;
     var id = req.query.userid;
     var lop = req.query.class;
@@ -96,14 +97,18 @@ app.get("/home", function (req, res) {
                                     console.log("Lop 12: ", classid);
                                 }
                                 console.log("hung: ", hung1);
-                                res.render("home", { classid,hung: hung1,userclass });
+                               
+                                res.render("student/home", { classid,hung: hung1,userclass });
 
                             })
                             .catch(err => {
                                 console.error(err);
+                                thongbao="Khong co thong tin ve hoc ba";
+                                res.render("student/home", {hung: hung1, thongbao });
+
                             });
                     } else {
-                        res.render("home", { hung: hung1 });
+                        res.render("student/home", { hung: hung1 });
                     }
                 } else {
                     console.log("Loi khong tim thay");
@@ -117,7 +122,7 @@ app.get("/home", function (req, res) {
 
     }
     else {
-        res.render("home", { hung: [] });
+        res.render("student/home", { hung: [] });
     }
 });
 
@@ -132,6 +137,7 @@ app.get("/student", function(req, res){
 });
 
 app.post("/notify/:id",urlencodedParser ,function(req, res){
+
     var id = req.params.id;
     console.log("id: ",id);
     var user_profile= [];
@@ -161,9 +167,12 @@ app.post("/notify/:id",urlencodedParser ,function(req, res){
                 "Send transaction promise and event listener promise have completed",
                 results
             );
+            res.render("notify", {thongbao : "Success"});
+            
         })
         .catch(err => {
             console.error(err);
+            res.render("notify", {thongbao : "Failed"});
         });
 
     } else if (i==11 || i==12){
@@ -183,13 +192,15 @@ app.post("/notify/:id",urlencodedParser ,function(req, res){
                 "Send transaction promise and event listener promise have completed",
                 results
             );
+            res.render("notify", {thongbao : "Success"});
         })
         .catch(err => {
             console.error(err);
+            res.render("notify", {thongbao : "Failed"});
         });
 
     }
-    res.render("notify");
+    
 });
 
 app.get("/create/class10",urlencodedParser ,function(req, res){
@@ -229,12 +240,14 @@ app.post("/notifystudent",urlencodedParser ,function(req, res){
                 "Send transaction promise and event listener promise have completed",
                 results
             );
+            res.render("notify", {thongbao : "Success"});
         })
         .catch(err => {
             console.error(err);
+            res.render("notify", {thongbao : "Failed"});
         });
     
-    res.render("notify");
+
 });
 
 app.get("/updateuser", function(req, res){
@@ -302,10 +315,12 @@ app.post("/notifyuser", urlencodedParser, function(req, res){
                 "Send transaction promise and event listener promise have completed",
                 results
             );
-            res.render("notify");
+            res.render("notify", {thongbao : "Success"});
         })
         .catch(err => {
             console.error(err);
+            res.render("notify", {thongbao : "Failed"});
+
         });
     
     
@@ -325,10 +340,13 @@ app.get("/deletestudent", function(req, res){
                     "Send transaction promise and event listener promise have completed",
                     results
                 );
-                res.render("notify");
+                res.render("notify", {thongbao : "Success"});
+
             })
             .catch(err => {
                 console.error(err);
+                res.render("notify", {thongbao : "Failed"});
+
             });
         
     } else {
@@ -365,10 +383,13 @@ app.post("/createscoreexam", urlencodedParser, function(req, res){
                 "Send transaction promise and event listener promise have completed",
                 results
             );
-            res.render("notify");
+            res.render("notify", {thongbao : "Success"});
+
         })
         .catch(err => {
             console.error(err);
+            res.render("notify", {thongbao : "Failed"});
+
         });  
 });
 

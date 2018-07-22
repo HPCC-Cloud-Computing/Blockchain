@@ -85,16 +85,16 @@ installChaincode() {
   ORG=$2
   setGlobals $PEER $ORG
 
-  peer chaincode install -n aaa -v 14.2 -p github.com/chaincode/user01/go/main_chaincode >&log1.txt
+  peer chaincode install -n aaa -v 15.3 -p github.com/chaincode/user01/go/main_chaincode >&log1.txt
   cat log1.txt
 
-  peer chaincode install -n aaa1 -v 14.2 -p github.com/chaincode/user01/go/chaincode_information >&log2.txt
+  peer chaincode install -n aaa1 -v 15.3 -p github.com/chaincode/user01/go/chaincode_information >&log2.txt
   cat log2.txt
 
-  peer chaincode install -n aaa2 -v 14.2 -p github.com/chaincode/user01/go/chaincode_school_profile >&log3.txt
+  peer chaincode install -n aaa2 -v 15.3 -p github.com/chaincode/user01/go/chaincode_school_profile >&log3.txt
   cat log3.txt
 
-  peer chaincode install -n aaa3 -v 14.2 -p github.com/chaincode/user01/go/chaincode_score >&log4.txt
+  peer chaincode install -n aaa3 -v 15.3 -p github.com/chaincode/user01/go/chaincode_score >&log4.txt
   cat log4.txt
 }
 
@@ -102,15 +102,15 @@ instantiateChaincode() {
 
   export CHANNEL_NAME=mychannel
 
-  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa -v 14.2 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log1.txt
+  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa -v 15.3 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log1.txt
   cat log1.txt
   
-  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa1 -v 14.2 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log2.txt
+  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa1 -v 15.3 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log2.txt
   cat log2.txt
 
-  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa2 -v 14.2 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log3.txt
+  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa2 -v 15.3 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log3.txt
   cat log3.txt
 
-  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa3 -v 14.2 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log4.txt
+  peer chaincode instantiate -o orderer.com:7050 --tls --cafile $ORDERER_CA -C $CHANNEL_NAME -n aaa3 -v 15.3 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')" >&log4.txt
   cat log4.txt
 }
