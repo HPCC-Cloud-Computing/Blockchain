@@ -226,7 +226,7 @@ module.exports = function(config) {
                 });
         },
 
-        invoke(user, invokeRequest) {
+        invoke(user, invokeRequest, start, i) {
             var tx_id;
 
             return this.get_member_user(user)
@@ -235,12 +235,16 @@ module.exports = function(config) {
 
                     tx_id = fabric_client.newTransactionID();
 
+                    var arrArg = [tx_id];
+                    for (var j = 0; j < invokeRequest.args.length; i ++) {
+                        arrArg = arrArg.push(invokeRequest.args[i]);
+                    }
                     console.log("invokeRequest:", invokeRequest);
 
                     return channel.sendTransactionProposal({
                         chaincodeId: invokeRequest.chaincodeId,
                         fcn: invokeRequest.fcn,
-                        args: invokeRequest.args,
+                        args: arrArg,
                         txId: tx_id
                     });
                 })
@@ -280,6 +284,8 @@ module.exports = function(config) {
                             config.eventHost,
                             transaction_id_string
                         );
+                        var end = Date.now();
+                        console.log("ending timer: ", i + "-", end);
 
                         const sendPromise = channel.sendTransaction({
                             proposalResponses: proposalResponses,

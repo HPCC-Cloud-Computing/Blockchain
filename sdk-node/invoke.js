@@ -26,6 +26,7 @@ program
         (val, memo) => memo.push(val) && memo,
         []
     )
+    .option("-l, --loop []", "loop", "8")
     .parse(process.argv);
 
 // node invoke.js -u user9 --channel mychannel --chaincode mycc -m invoke -a a -a b -a 10
@@ -38,6 +39,8 @@ const config = Object.assign({}, defaultConfig, {
 
 var controller = require("./controller")(config);
 
+var loop = program.loop;
+
 var request = {
     //targets: let default to the peer assigned to the client
     chaincodeId: program.chaincode,
@@ -45,9 +48,20 @@ var request = {
     args: program.arguments
 };
 
+async function getTimer() {
+    for (var i = 0; i < 2 * loop; i ++) {
+        var start = Date.now();
+        console.log("starting timer: ", i + "-", start );
+        await setTimeout(function() {
+        },125);
+        getTimeInvoke(request, start, i);
+    }
+}
+
 // each method require different certificate of user
-controller
-    .invoke(program.user, request)
+function getTimeInvoke(request, start, i) {
+    controller
+    .invoke(program.user, request, start, i)
     .then(results => {
         console.log(
             "Send transaction promise and event listener promise have completed",
@@ -57,3 +71,4 @@ controller
     .catch(err => {
         console.error(err);
     });
+}
