@@ -26,7 +26,7 @@ program
         (val, memo) => memo.push(val) && memo,
         []
     )
-    // .option("-l, --loop []", "loop", "8")
+    // .option("-l, --loop []", "Loop", "8")
     .parse(process.argv);
 
 // node invoke.js -u user9 --channel mychannel --chaincode mycc -m invoke -a a -a b -a 10
@@ -45,6 +45,8 @@ var request = {
     fcn: program.method,
     args: program.arguments
 };
+
+getTimer();
 
 async function getTimer() {
     for (var i = 0; i < 2 * 8; i ++) {
