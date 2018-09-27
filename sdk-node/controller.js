@@ -237,7 +237,7 @@ module.exports = function(config) {
 
                     var arrArg = [tx_id];
                     for (var j = 0; j < invokeRequest.args.length; i ++) {
-                        arrArg = arrArg.push(invokeRequest.args[i]);
+                        arrArg.push(invokeRequest.args[i]);
                     }
                     console.log("invokeRequest:", invokeRequest);
 
