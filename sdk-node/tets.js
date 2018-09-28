@@ -29,40 +29,42 @@ function timeout(ms) {
 //     }
 // } 
 
-const sleep = require('util').promisify(setTimeout)
+// const sleep = require('util').promisify(setTimeout)
 
-async function main() {
-    for (var i = 0; i  < 5; i ++) {
-        console.log("Slept for1", i);
-        await timeout(1000);
-        console.log("Slept for2", i);
+// async function main() {
+//     for (var i = 0; i  < 5; i ++) {
+//         console.log("Slept for1", i);
+//         await timeout(1000);
+//         console.log("Slept for2", i);
+//     }
+// }
+
+// main()
+
+
+async function getTimer() {
+    for (var i = 0; i < 2 * 8; i ++) {
+        var start = Date.now();
+        console.log("starting timer: ", i , "-", start );
+        await setTimeout(function() {
+            result => getTimeInvoke(i)
+            .then(result)
+        },125);
+        getTimeInvoke(i);
     }
 }
 
-main()
+function getTimeInvoke(i) {
+    if (i == 2) {    
+        timeout(300);
+        var end = Date.now();
+        console.log("ending timer: ", i , "-", end );
+    } else {
+        timeout(400);
+        var end = Date.now();
+        console.log("ending timer: ", i , "-", end );
+    }
+}
 
-
-// async function getTimer() {
-//     for (var i = 0; i < 2 * 8; i ++) {
-//         var start = Date.now();
-//         console.log("starting timer: ", i , "-", start );
-//         await setTimeout(function() {
-//             result => getTimeInvoke(i);
-//         },125);
-//         getTimeInvoke(i);
-//     }
-// }
-
-// function getTimeInvoke(i) {
-//     if (i == 2) {    
-//         timeout(300);
-//         var end = Date.now();
-//         console.log("ending timer: ", i , "-", end );
-//     } else {
-//         var end = Date.now();
-//         console.log("ending timer: ", i , "-", end );
-//     }
-// }
-
-// getTimer();
+getTimer();
 

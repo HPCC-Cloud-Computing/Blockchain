@@ -235,7 +235,7 @@ module.exports = function(config) {
 
                     tx_id = fabric_client.newTransactionID();
 
-                    var arrArg = [tx_id.toString()];
+                    var arrArg = [tx_id.getTransactionID()];
                     for (var j = 0; j < invokeRequest.args.length; j ++) {
                         arrArg.push(invokeRequest.args[j]);
                     }

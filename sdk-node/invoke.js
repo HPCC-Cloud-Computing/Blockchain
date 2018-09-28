@@ -54,7 +54,8 @@ async function getTimer() {
         var start = Date.now();
         console.log("starting timer: ", i + "-", start );
         await setTimeout(function() {
-            result => getTimeInvoke(start, i);
+            result => getTimeInvoke(start, i)
+            .then(result)
         },125);
         getTimeInvoke(start, i);
     }
