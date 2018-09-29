@@ -53,16 +53,17 @@ async function getTimer() {
     for (var i = 0; i < 2*numLoop; i ++) {
         var start = Date.now();
         console.log("starting timer: ", i + "-", start );
+        request.args[0] = request.args[0] + i.toString();
         await setTimeout(function() {
-            result => getTimeInvoke(start, i)
+            result => getTimeInvoke(request, start, i)
             .then(result)
         },125);
-        getTimeInvoke(start, i);
+        getTimeInvoke(request, start, i);
     }
 }
 
 // each method require different certificate of user
-function getTimeInvoke(start, i) {
+function getTimeInvoke(request, start, i) {
     controller
     .invoke(program.user, request, start, i)
     .then(results => {
