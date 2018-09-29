@@ -55,10 +55,10 @@ async function getTimer() {
         console.log("starting timer: ", i + "-", start );
         request.args[0] = request.args[0] + i.toString();
         await setTimeout(function() {
-            result => getTimeInvoke(request, start, i)
-            .then(result)
+            // result => getTimeInvoke(request, start, i)
+            // .then(result)
         },125);
-        getTimeInvoke(request, start, i);
+        await getTimeInvoke(request, start, i);
     }
 }
 
