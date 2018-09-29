@@ -47,18 +47,18 @@ async function getTimer() {
         var start = Date.now();
         console.log("starting timer: ", i , "-", start );
         await setTimeout(function() {
-        },1000);
-        await getTimeInvoke(i);
+        },125);
+        getTimeInvoke(i);
     }
 }
 
-function getTimeInvoke(i) {
+async function getTimeInvoke(i) {
     if (i == 2) {    
-        timeout(300);
+        await timeout(300);
         var end = Date.now();
         console.log("ending timer: ", i , "-", end );
     } else {
-        timeout(400);
+        await timeout(400);
         var end = Date.now();
         console.log("ending timer: ", i , "-", end );
     }

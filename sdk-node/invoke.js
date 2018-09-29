@@ -63,7 +63,7 @@ async function getTimer() {
 }
 
 // each method require different certificate of user
-function getTimeInvoke(request, start, i) {
+async function getTimeInvoke(request, start, i) {
     controller
     .invoke(program.user, request, start, i)
     .then(results => {
