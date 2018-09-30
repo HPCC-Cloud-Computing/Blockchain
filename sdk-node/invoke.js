@@ -61,7 +61,7 @@ function wait(ms) {
 
 async function getTimer(request,i) {
     var start = Date.now();
-    console.log("starting timer: ", i + "-", start);
+    // console.log("starting timer: ", i + "-", start);
     mapTime.set(i,start);
     // var fs = require("fs");
     // fs.appendFile('input.txt',"start " + i +": " + start +"\n" ,  function(err) {

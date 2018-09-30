@@ -231,7 +231,7 @@ module.exports = function(config) {
 
             return this.get_member_user(user)
                 .then(user_from_store => {
-                    console.log("user_from_store:", user_from_store);
+                    // console.log("user_from_store:", user_from_store);
 
                     tx_id = fabric_client.newTransactionID();
 
@@ -239,7 +239,7 @@ module.exports = function(config) {
                     for (var j = 0; j < invokeRequest.args.length; j ++) {
                         arrArg.push(invokeRequest.args[j]);
                     }
-                    console.log("invokeRequest:", invokeRequest);
+                    // console.log("invokeRequest:", invokeRequest);
 
                     return channel.sendTransactionProposal({
                         chaincodeId: invokeRequest.chaincodeId,
@@ -261,7 +261,7 @@ module.exports = function(config) {
                         proposalResponses[0].response.status === 200
                     ) {
                         isProposalGood = true;
-                        console.log("Transaction proposal was good");
+                        // console.log("Transaction proposal was good");
                     } else {
                         console.error("Transaction proposal was bad");
                         console.error("results:", results);
@@ -285,7 +285,7 @@ module.exports = function(config) {
                             transaction_id_string
                         );
                         var end = Date.now();
-                        console.log("ending timer: ", i + "-", end);
+                        // console.log("ending timer: ", i + "-", end);
                         var timeInvoke = end - mapTime.get(i);
                         console.log("timeInvoke: ",timeInvoke);
                         // var fs = require("fs");
