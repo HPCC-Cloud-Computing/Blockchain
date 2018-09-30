@@ -40,6 +40,9 @@ const config = Object.assign({}, defaultConfig, {
 var controller = require("./controller")(config);
 var numLoop = program.loop;
 var mapTime = new Map();
+var timeInvokeMax = 0;
+var timeInvokeMin = 10000;
+var arrTest = new Array();
 invoke();
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
@@ -70,13 +73,13 @@ async function getTimer(request,i) {
     //     }
     //     console.log("Ghi du lieu vao file thanh cong!");
     // });
-    await getTimeInvoke(request, mapTime, i);
+    await getTimeInvoke(request, numLoop, timeInvokeMax, timeInvokeMin, mapTime, i);
 }
 
 // each method require different certificate of user
-function getTimeInvoke(request, mapTime, i) {
+function getTimeInvoke(request, numLoop, timeInvokeMax, timeInvokeMin, mapTime, i) {
     controller
-        .invoke(program.user, request, mapTime, i)
+        .invoke(program.user, request, numLoop, timeInvokeMax, timeInvokeMin, mapTime, i)
         .then(results => {
             console.log(
                 "Send transaction promise and event listener promise have completed",

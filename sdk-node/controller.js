@@ -226,7 +226,7 @@ module.exports = function(config) {
                 });
         },
 
-        invoke(user, invokeRequest, mapTime, i) {
+        invoke(user, invokeRequest, numLoop,  timeInvokeMax, timeInvokeMin, mapTime, i) {
             var tx_id;
 
             return this.get_member_user(user)
@@ -288,6 +288,14 @@ module.exports = function(config) {
                         // console.log("ending timer: ", i + "-", end);
                         var timeInvoke = end - mapTime.get(i);
                         console.log("timeInvoke: ",timeInvoke);
+                        if (timeInvokeMax < timeInvoke) {
+                            timeInvokeMax = timeInvoke;
+                        } else if (timeInvokeMin > timeInvoke) {
+                            timeInvokeMin = timeInvoke;
+                        }
+
+                        var throuTime = (timeInvokeMax - timeInvokeMin) / numLoop;
+                        console.log("Throughput: ",throuTime);
                         // var fs = require("fs");
                         // fs.appendFile('end.txt',"end"  + i +": " + end+ "\n" ,  function(err) {
                         //     if (err) {
