@@ -39,6 +39,7 @@ const config = Object.assign({}, defaultConfig, {
 
 var controller = require("./controller")(config);
 var numLoop = program.loop;
+var mapTime = new Map();
 invoke();
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
@@ -60,21 +61,22 @@ function wait(ms) {
 
 async function getTimer(request,i) {
     var start = Date.now();
-    // console.log("starting timer: ", i + "-", start);
-    var fs = require("fs");
-    fs.appendFile('input.txt',"start " + i +": " + start +"\n" ,  function(err) {
-        if (err) {
-            return console.error(err);
-        }
-        console.log("Ghi du lieu vao file thanh cong!");
-    });
-    await getTimeInvoke(request, start, i);
+    console.log("starting timer: ", i + "-", start);
+    mapTime.set(i,start);
+    // var fs = require("fs");
+    // fs.appendFile('input.txt',"start " + i +": " + start +"\n" ,  function(err) {
+    //     if (err) {
+    //         return console.error(err);
+    //     }
+    //     console.log("Ghi du lieu vao file thanh cong!");
+    // });
+    await getTimeInvoke(request, mapTime, i);
 }
 
 // each method require different certificate of user
-function getTimeInvoke(request, start, i) {
+function getTimeInvoke(request, mapTime, i) {
     controller
-        .invoke(program.user, request, start, i)
+        .invoke(program.user, request, mapTime, i)
         .then(results => {
             console.log(
                 "Send transaction promise and event listener promise have completed",

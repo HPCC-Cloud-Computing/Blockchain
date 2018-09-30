@@ -226,7 +226,7 @@ module.exports = function(config) {
                 });
         },
 
-        invoke(user, invokeRequest, start, i) {
+        invoke(user, invokeRequest, mapTime, i) {
             var tx_id;
 
             return this.get_member_user(user)
@@ -285,14 +285,16 @@ module.exports = function(config) {
                             transaction_id_string
                         );
                         var end = Date.now();
-                        // console.log("ending timer: ", i + "-", end);
-                        var fs = require("fs");
-                        fs.appendFile('end.txt',"end"  + i +": " + end+ "\n" ,  function(err) {
-                            if (err) {
-                                return console.error(err);
-                            }
-                            console.log("Ghi du lieu vao file thanh cong!");
-                        });
+                        console.log("ending timer: ", i + "-", end);
+                        var timeInvoke = end - mapTime.get(i);
+                        console.log("timeInvoke: ",timeInvoke);
+                        // var fs = require("fs");
+                        // fs.appendFile('end.txt',"end"  + i +": " + end+ "\n" ,  function(err) {
+                        //     if (err) {
+                        //         return console.error(err);
+                        //     }
+                        //     console.log("Ghi du lieu vao file thanh cong!");
+                        // });
                         const sendPromise = channel.sendTransaction({
                             proposalResponses: proposalResponses,
                             proposal: proposal
