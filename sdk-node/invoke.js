@@ -73,11 +73,11 @@ async function getTimer(request,i) {
     //     }
     //     console.log("Ghi du lieu vao file thanh cong!");
     // });
-    await getTimeInvoke(request, numLoop, mapTime, i);
+    await getTimeInvoke(request, numLoop, timeInvokeMax, timeInvokeMin, mapTime, i);
 }
 
 // each method require different certificate of user
-function getTimeInvoke(request, numLoop, mapTime, i) {
+function getTimeInvoke(request, numLoop, timeInvokeMax, timeInvokeMin, mapTime, i) {
     controller
         .invoke(program.user, request, numLoop, timeInvokeMax, timeInvokeMin, mapTime, i)
         .then(results => {
