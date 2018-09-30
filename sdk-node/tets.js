@@ -1,7 +1,7 @@
 
-function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+// function timeout(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 // async function sleep() {
 //     for (var i = 0; i < 2 * 8; i ++) {
@@ -42,29 +42,36 @@ function timeout(ms) {
 // main()
 
 
-async function getTimer() {
-    for (var i = 0; i < 2 * 8; i ++) {
-        var start = Date.now();
-        console.log("starting timer: ", i , "-", start );
-        await setTimeout(function() {
-            result => getTimeInvoke(i)
-            .then(result)
-        },125);
-        getTimeInvoke(i);
+// async function getTimer() {
+//     for (var i = 0; i < 2 * 8; i ++) {
+//         var start = Date.now();
+//         console.log("starting timer: ", i , "-", start );
+//         await setTimeout(function() {
+//         },125);
+//         getTimeInvoke(i);
+//     }
+// }
+
+// async function getTimeInvoke(i) {
+//     if (i == 2) {    
+//         await timeout(300);
+//         var end = Date.now();
+//         console.log("ending timer: ", i , "-", end );
+//     } else {
+//         await timeout(400);
+//         var end = Date.now();
+//         console.log("ending timer: ", i , "-", end );
+//     }
+// }
+
+// getTimer();
+var i = 0;
+function a (i){
+    for (var j = 5 ; j > 0; j --) {
+        if ( i < j) {
+            i = j;
+            console.log(i);
+        }
     }
 }
-
-function getTimeInvoke(i) {
-    if (i == 2) {    
-        timeout(300);
-        var end = Date.now();
-        console.log("ending timer: ", i , "-", end );
-    } else {
-        timeout(400);
-        var end = Date.now();
-        console.log("ending timer: ", i , "-", end );
-    }
-}
-
-getTimer();
-
+a(i);
