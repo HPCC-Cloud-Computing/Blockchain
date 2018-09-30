@@ -39,8 +39,6 @@ const config = Object.assign({}, defaultConfig, {
 
 var controller = require("./controller")(config);
 var numLoop = program.loop;
-var mapTime = new Map();
-var arrTest = new Array();
 invoke();
 var timeWait =1000 / numLoop;
 async function invoke() {
@@ -63,14 +61,13 @@ function wait(ms) {
 
 async function getTimer(request,i) {
     var start = Date.now();
-    mapTime.set(i,start);
-    await getTimeInvoke(request, numLoop, mapTime, i);
+    await getTimeInvoke(request, numLoop, start, i);
 }
 
 // each method require different certificate of user
-function getTimeInvoke(request, numLoop, mapTime, i) {
+function getTimeInvoke(request, numLoop, start, i) {
     controller
-        .invoke(program.user, request, numLoop, mapTime, i)
+        .invoke(program.user, request, numLoop, start, i)
         .then(results => {
             console.log(
                 "Send transaction promise and event listener promise have completed",

@@ -225,7 +225,7 @@ module.exports = function(config) {
                 });
         },
 
-        invoke(user, invokeRequest, mapTime, i) {
+        invoke(user, invokeRequest, start, i) {
             var tx_id;
 
             return this.get_member_user(user)
@@ -285,19 +285,17 @@ module.exports = function(config) {
                         );
                         var end = Date.now();
 
-                        var timeInvoke = end - mapTime.get(i);
+                        var timeInvoke = end - start;
                         var fs = require("fs");
                         fs.appendFile('thoughput.txt',end+ "\n" ,  function(err) {
                             if (err) {
                                 return console.error(err);
                             }
-                            console.log("Ghi du lieu vao file thanh cong!");
                         });
                         fs.appendFile('latency.txt',timeInvoke+ "\n" ,  function(err) {
                             if (err) {
                                 return console.error(err);
                             }
-                            console.log("Ghi du lieu vao file thanh cong!");
                         });
                         const sendPromise = channel.sendTransaction({
                             proposalResponses: proposalResponses,
