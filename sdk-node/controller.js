@@ -175,7 +175,6 @@ module.exports = function(config) {
               let event_hub = fabric_client.newEventHub();
               event_hub.setPeerAddr("grpc://" + eventAdress);
               console.log("eventhub: grpc://" + eventAdress);
-
               let handle = setTimeout(() => {
                 event_hub.unregisterTxEvent(transaction_id_string);
                 resolve({ event_status: "TIMEOUT" }); //we could use reject(new Error('Trnasaction did not complete within 30 seconds'));
@@ -226,12 +225,12 @@ module.exports = function(config) {
                 });
         },
 
-        invoke(user, invokeRequest, start, i) {
+        invoke(user, invokeRequest, numLoop,  timeInvokeMax, timeInvokeMin, mapTime, i) {
             var tx_id;
 
             return this.get_member_user(user)
                 .then(user_from_store => {
-                    console.log("user_from_store:", user_from_store);
+                    // console.log("user_from_store:", user_from_store);
 
                     tx_id = fabric_client.newTransactionID();
 
@@ -239,7 +238,7 @@ module.exports = function(config) {
                     for (var j = 0; j < invokeRequest.args.length; j ++) {
                         arrArg.push(invokeRequest.args[j]);
                     }
-                    console.log("invokeRequest:", invokeRequest);
+                    // console.log("invokeRequest:", invokeRequest);
 
                     return channel.sendTransactionProposal({
                         chaincodeId: invokeRequest.chaincodeId,
@@ -261,7 +260,7 @@ module.exports = function(config) {
                         proposalResponses[0].response.status === 200
                     ) {
                         isProposalGood = true;
-                        console.log("Transaction proposal was good");
+                        // console.log("Transaction proposal was good");
                     } else {
                         console.error("Transaction proposal was bad");
                         console.error("results:", results);
@@ -285,8 +284,29 @@ module.exports = function(config) {
                             transaction_id_string
                         );
                         var end = Date.now();
-                        console.log("ending timer: ", i + "-", end);
+                        // console.log("ending timer: ", i + "-", end);
+                        var timeInvoke = end - mapTime.get(i);
+                        console.log("timeInvoke: ",timeInvoke);
+                        console.log("timeInvokeMax1: ",timeInvokeMax);
+                        console.log("timeInvokeMin1: ",timeInvokeMin);
+                        if (timeInvokeMax < timeInvoke) {
+                            timeInvokeMax = timeInvoke;
+                        } else if (parseInt(timeInvokeMin) > timeInvoke) {
+                            timeInvokeMin = timeInvoke;
+                        }
 
+                        console.log("timeInvokeMax: ",timeInvokeMax);
+                        console.log("timeInvokeMin: ",timeInvokeMin);
+
+                        var throuTime = (timeInvokeMax - timeInvokeMin) / numLoop;
+                        console.log("Throughput: ",throuTime);
+                        // var fs = require("fs");
+                        // fs.appendFile('end.txt',"end"  + i +": " + end+ "\n" ,  function(err) {
+                        //     if (err) {
+                        //         return console.error(err);
+                        //     }
+                        //     console.log("Ghi du lieu vao file thanh cong!");
+                        // });
                         const sendPromise = channel.sendTransaction({
                             proposalResponses: proposalResponses,
                             proposal: proposal
