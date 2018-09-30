@@ -285,8 +285,14 @@ module.exports = function(config) {
                             transaction_id_string
                         );
                         var end = Date.now();
-                        console.log("ending timer: ", i + "-", end);
-
+                        // console.log("ending timer: ", i + "-", end);
+                        var fs = require("fs");
+                        fs.appendFile('end.txt',"end"  + i +": " + end+ "\n" ,  function(err) {
+                            if (err) {
+                                return console.error(err);
+                            }
+                            console.log("Ghi du lieu vao file thanh cong!");
+                        });
                         const sendPromise = channel.sendTransaction({
                             proposalResponses: proposalResponses,
                             proposal: proposal
@@ -308,3 +314,4 @@ module.exports = function(config) {
 
     return instance;
 };
+

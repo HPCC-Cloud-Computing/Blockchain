@@ -1,4 +1,3 @@
-'use strict';
 /*
 * Copyright IBM Corp All Rights Reserved
 *
@@ -38,36 +37,30 @@ const config = Object.assign({}, defaultConfig, {
 });
 
 var controller = require("./controller")(config);
+
+
 var numLoop = program.loop;
 invoke();
-async function invoke() {
+function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
-        var arg = program.arguments;
-        arg[0] = arg[0] + i;
+        arg = process.arguments + i.toString;
         var request = {
             //targets: let default to the peer assigned to the client
             chaincodeId: program.chaincode,
             fcn: program.method,
             args: arg
         };
-        getTimer(request,i);
-        await wait(1000 / numLoop);
+        getTimer(request);
     }
 }
 function wait(ms) {
     return new Promise(r => setTimeout(r, ms))
 }
 
-async function getTimer(request,i) {
+async function getTimer(request) {
+    await wait(1000 / numLoop);
     var start = Date.now();
-    // console.log("starting timer: ", i + "-", start);
-    var fs = require("fs");
-    fs.appendFile('input.txt',"start " + i +": " + start +"\n" ,  function(err) {
-        if (err) {
-            return console.error(err);
-        }
-        console.log("Ghi du lieu vao file thanh cong!");
-    });
+    console.log("starting timer: ", i + "-", start);
     await getTimeInvoke(request, start, i);
 }
 
