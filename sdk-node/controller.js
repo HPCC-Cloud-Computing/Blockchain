@@ -288,9 +288,9 @@ module.exports = function(config) {
                         // console.log("ending timer: ", i + "-", end);
                         var timeInvoke = end - mapTime.get(i);
                         console.log("timeInvoke: ",timeInvoke);
-                        if (timeInvokeMax < timeInvoke) {
+                        if (parseInt(timeInvokeMax) < timeInvoke) {
                             timeInvokeMax = timeInvoke;
-                        } else if (timeInvokeMin > timeInvoke) {
+                        } else if (parseInt(timeInvokeMin) > timeInvoke) {
                             timeInvokeMin = timeInvoke;
                         }
 
