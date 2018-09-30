@@ -294,6 +294,9 @@ module.exports = function(config) {
                             timeInvokeMin = timeInvoke;
                         }
 
+                        console.log("timeInvokeMax: ",timeInvokeMax);
+                        console.log("timeInvokeMin: ",timeInvokeMin);
+
                         var throuTime = (timeInvokeMax - timeInvokeMin) / numLoop;
                         console.log("Throughput: ",throuTime);
                         // var fs = require("fs");
