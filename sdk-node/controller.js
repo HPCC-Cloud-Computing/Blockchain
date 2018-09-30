@@ -225,7 +225,7 @@ module.exports = function(config) {
                 });
         },
 
-        invoke(user, invokeRequest, numLoop,  timeInvokeMax, timeInvokeMin, mapTime, i) {
+        invoke(user, invokeRequest, mapTime, i) {
             var tx_id;
 
             return this.get_member_user(user)
@@ -284,7 +284,7 @@ module.exports = function(config) {
                             transaction_id_string
                         );
                         var end = Date.now();
-                        
+
                         var timeInvoke = end - mapTime.get(i);
                         var fs = require("fs");
                         fs.appendFile('thoughput.txt',end+ "\n" ,  function(err) {
