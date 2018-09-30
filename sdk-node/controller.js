@@ -284,29 +284,21 @@ module.exports = function(config) {
                             transaction_id_string
                         );
                         var end = Date.now();
-                        // console.log("ending timer: ", i + "-", end);
+                        
                         var timeInvoke = end - mapTime.get(i);
-                        console.log("timeInvoke: ",timeInvoke);
-                        console.log("timeInvokeMax1: ",timeInvokeMax);
-                        console.log("timeInvokeMin1: ",timeInvokeMin);
-                        if (timeInvokeMax < timeInvoke) {
-                            timeInvokeMax = timeInvoke;
-                        } else if (parseInt(timeInvokeMin) > timeInvoke) {
-                            timeInvokeMin = timeInvoke;
-                        }
-
-                        console.log("timeInvokeMax: ",timeInvokeMax);
-                        console.log("timeInvokeMin: ",timeInvokeMin);
-
-                        var throuTime = (timeInvokeMax - timeInvokeMin) / numLoop;
-                        console.log("Throughput: ",throuTime);
-                        // var fs = require("fs");
-                        // fs.appendFile('end.txt',"end"  + i +": " + end+ "\n" ,  function(err) {
-                        //     if (err) {
-                        //         return console.error(err);
-                        //     }
-                        //     console.log("Ghi du lieu vao file thanh cong!");
-                        // });
+                        var fs = require("fs");
+                        fs.appendFile('thoughput.txt',end+ "\n" ,  function(err) {
+                            if (err) {
+                                return console.error(err);
+                            }
+                            console.log("Ghi du lieu vao file thanh cong!");
+                        });
+                        fs.appendFile('latency.txt',timeInvoke+ "\n" ,  function(err) {
+                            if (err) {
+                                return console.error(err);
+                            }
+                            console.log("Ghi du lieu vao file thanh cong!");
+                        });
                         const sendPromise = channel.sendTransaction({
                             proposalResponses: proposalResponses,
                             proposal: proposal

@@ -40,14 +40,13 @@ const config = Object.assign({}, defaultConfig, {
 var controller = require("./controller")(config);
 var numLoop = program.loop;
 var mapTime = new Map();
-var timeInvokeMax = 0;
-var timeInvokeMin = 10000;
 var arrTest = new Array();
 invoke();
+var timeWait =1000 / numLoop;
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
         var arg = program.arguments;
-        arg[0] = arg[0] + i;
+        arg[0] = arg[0] + i%10;
         var request = {
             //targets: let default to the peer assigned to the client
             chaincodeId: program.chaincode,
@@ -55,7 +54,7 @@ async function invoke() {
             args: arg
         };
         getTimer(request,i);
-        await wait(1000 / numLoop);
+        await wait(timeWait);
     }
 }
 function wait(ms) {
@@ -64,22 +63,14 @@ function wait(ms) {
 
 async function getTimer(request,i) {
     var start = Date.now();
-    // console.log("starting timer: ", i + "-", start);
     mapTime.set(i,start);
-    // var fs = require("fs");
-    // fs.appendFile('input.txt',"start " + i +": " + start +"\n" ,  function(err) {
-    //     if (err) {
-    //         return console.error(err);
-    //     }
-    //     console.log("Ghi du lieu vao file thanh cong!");
-    // });
-    await getTimeInvoke(request, numLoop, timeInvokeMax, timeInvokeMin, mapTime, i);
+    await getTimeInvoke(request, numLoop, mapTime, i);
 }
 
 // each method require different certificate of user
-function getTimeInvoke(request, numLoop, timeInvokeMax, timeInvokeMin, mapTime, i) {
+function getTimeInvoke(request, numLoop, mapTime, i) {
     controller
-        .invoke(program.user, request, numLoop, timeInvokeMax, timeInvokeMin, mapTime, i)
+        .invoke(program.user, request, numLoop, mapTime, i)
         .then(results => {
             console.log(
                 "Send transaction promise and event listener promise have completed",
