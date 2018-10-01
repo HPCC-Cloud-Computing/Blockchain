@@ -225,7 +225,7 @@ module.exports = function(config) {
                 });
         },
 
-        invoke(user, invokeRequest, start, i) {
+        invoke(user, invokeRequest, start) {
             var tx_id;
 
             return this.get_member_user(user)

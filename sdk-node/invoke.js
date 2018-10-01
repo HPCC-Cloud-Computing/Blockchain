@@ -51,7 +51,7 @@ async function invoke() {
             fcn: program.method,
             args: arg
         };
-        getTimer(request,i);
+        getTimer(request);
         await wait(timeWait);
     }
 }
@@ -59,15 +59,15 @@ function wait(ms) {
     return new Promise(r => setTimeout(r, ms))
 }
 
-async function getTimer(request,i) {
+async function getTimer(request) {
     var start = Date.now();
-    await getTimeInvoke(request, numLoop, start, i);
+    await getTimeInvoke(request, start);
 }
 
 // each method require different certificate of user
-function getTimeInvoke(request, numLoop, start, i) {
+function getTimeInvoke(request, start) {
     controller
-        .invoke(program.user, request, numLoop, start, i)
+        .invoke(program.user, request, start)
         .then(results => {
             console.log(
                 "Send transaction promise and event listener promise have completed",
