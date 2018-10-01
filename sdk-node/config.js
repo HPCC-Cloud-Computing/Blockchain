@@ -24,15 +24,15 @@ module.exports = {
 
 /*
 
-export CA_HOST=localhost:30500;
-export PEER_HOST=localhost:30501;
-export EVENT_HOST=localhost:30503;
-export ORDERER_HOST=localhost:32001;
-export ORDERER_DOMAIN=orderer1.orgorderer;
-export PEER_DOMAIN=peer0.org1;
-export CA_SERVER_NAME=ca;
-export MSPID=Org1MSP;
-export TLS_ENABLED=true;
+    export CA_HOST=localhost:30500;
+    export PEER_HOST=localhost:30501;
+    export EVENT_HOST=localhost:30503;
+    export ORDERER_HOST=localhost:32001;
+    export ORDERER_DOMAIN=orderer1.orgorderer;
+    export PEER_DOMAIN=peer0.org1;
+    export CA_SERVER_NAME=ca;
+    export MSPID=Org1MSP;
+    export TLS_ENABLED=true;
 
 node enrollAdmin.js
 node registerUser.js -u user9
