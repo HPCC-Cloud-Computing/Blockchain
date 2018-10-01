@@ -287,7 +287,7 @@ module.exports = function(config) {
 
                         var timeInvoke = end - start;
                         var fs = require("fs");
-                        fs.appendFile('thoughput.txt',end+ "\n" ,  function(err) {
+                        fs.appendFile('throughput.txt',end+ "\n" ,  function(err) {
                             if (err) {
                                 return console.error(err);
                             }
