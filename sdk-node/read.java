@@ -11,9 +11,9 @@ public class read {
             Scanner sc = new Scanner(x);
             long time = sc.nextLong();
             long minTime=time,maxTime = time;
-            long co=0;
-            while (sc.hasNextLine()) {
-                time=sc.nextLong();
+            long co=1;
+            while (sc.hasNext()) {
+                time = sc.nextLong();
                 co+=1;
                 if (minTime>time) minTime=time;
                 if(maxTime<time) maxTime=time;
@@ -24,14 +24,15 @@ public class read {
         } catch (FileNotFoundException e) {
             System.out.println("Error");
         }
+
         try {
             File y = new File("latency.txt");
             Scanner scan = new Scanner(y);
-            int time ;
+            int time1=0 ;
             int sum =0, cout=0;
-            while (scan.hasNextLine()) {
-                time=scan.nextInt();
-                sum +=time;
+            while (scan.hasNext()) {
+                time1=scan.nextInt();
+                sum +=time1;
                 cout+=1;
             }
             float la=(float)sum/(float)cout;
