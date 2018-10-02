@@ -209,25 +209,25 @@ module.exports = function(config) {
                     //     "], checking results"
                     // );
                     // console.log(query_responses);
+                    var end = Date.now();
+
+                        var timeInvoke = end - start;
+                        var fs = require("fs");
+                        fs.appendFile('throughput.txt',end+ "\n" ,  function(err) {
+                        if (err) {
+                            return console.error(err);
+                            }
+                        });
+                        fs.appendFile('latency.txt',timeInvoke+ "\n" ,  function(err) {
+                        if (err) {
+                            return console.error(err);
+                            }
+                        });
                     // query_responses could have more than one  results if there multiple peers were used as targets
                     if (query_responses && query_responses.length == 1) {
                         if (query_responses[0] instanceof Error) {
                             console.error("error from query = ", query_responses[0]);
                         } else {
-                            var end = Date.now();
-
-                            var timeInvoke = end - start;
-                            var fs = require("fs");
-                            fs.appendFile('throughput.txt',end+ "\n" ,  function(err) {
-                            if (err) {
-                                return console.error(err);
-                                }
-                            });
-                            fs.appendFile('latency.txt',timeInvoke+ "\n" ,  function(err) {
-                            if (err) {
-                                return console.error(err);
-                                }
-                            });
                             // const response = query_responses[0];
                             return query_responses[0];
                             // console.log("Response is \n", response);
