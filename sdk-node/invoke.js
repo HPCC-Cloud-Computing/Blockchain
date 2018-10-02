@@ -51,7 +51,7 @@ async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
         program.arguments[0] = program.arguments[0] + "a";
         getTimer(request);
-        await wait(500);
+        await wait(125);
     }
 }
 function wait(ms) {
