@@ -23,6 +23,7 @@ program
         (val, memo) => memo.push(val) && memo,
         []
     )
+    .option("-l, --loop []", "Loop", "8")
     .parse(process.argv);
 
 
