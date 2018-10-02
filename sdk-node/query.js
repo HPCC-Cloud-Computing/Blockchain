@@ -50,7 +50,7 @@ async function invoke() {
             args: program.arguments
         };
         getTimer(request);
-        await wait(timeWait);
+        await wait(125);
     }
 }
 function wait(ms) {
