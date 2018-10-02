@@ -252,7 +252,7 @@ module.exports = function(config) {
                     for (var j = 0; j < invokeRequest.args.length; j ++) {
                         arrArg.push(invokeRequest.args[j]);
                     }
-                    // console.log("invokeRequest:", invokeRequest);
+                    console.log("invokeRequest:", invokeRequest);
 
                     return channel.sendTransactionProposal({
                         chaincodeId: invokeRequest.chaincodeId,
