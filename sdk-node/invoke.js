@@ -50,12 +50,11 @@ var timeWait =1000 / numLoop;
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
         program.arguments[0] = program.arguments[0] + "a";
-        getTimer(request);
-        await wait(timeWait);
+        await wait(request,timeWait);
     }
 }
-function wait(ms) {
-    return new Promise(r => setTimeout(r, ms))
+function wait(request,ms) {
+    return new Promise( setTimeout(getTimer(request), ms))
 }
 
 async function getTimer(request) {
