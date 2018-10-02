@@ -39,17 +39,17 @@ const config = Object.assign({}, defaultConfig, {
 
 var controller = require("./controller")(config);
 var numLoop = program.loop;
+var request = {
+    //targets: let default to the peer assigned to the client
+    chaincodeId: program.chaincode,
+    fcn: program.method,
+    args: program.arguments
+};
 invoke();
 var timeWait =1000 / numLoop;
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
         program.arguments[0] = program.arguments[0] + "a";
-        var request = {
-            //targets: let default to the peer assigned to the client
-            chaincodeId: program.chaincode,
-            fcn: program.method,
-            args: program.arguments
-        };
         getTimer(request);
         await wait(timeWait);
     }
