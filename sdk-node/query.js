@@ -36,23 +36,43 @@ const config = Object.assign({}, defaultConfig, {
 console.log("Config:", config);
 
 var controller = require("./controller")(config);
+var numLoop = program.loop;
+invoke();
+var timeWait =1000 / numLoop;
+async function invoke() {
+    for (var i = 0; i < 2 * numLoop; i++) {
+        var arg = program.arguments;
+        arg[0] = arg[0] + "a";
+        var request = {
+            //targets: let default to the peer assigned to the client
+            chaincodeId: program.chaincode,
+            fcn: program.method,
+            args: arg
+        };
+        getTimer(request);
+        await wait(timeWait);
+    }
+}
+function wait(ms) {
+    return new Promise(r => setTimeout(r, ms))
+}
 
-const request = {
-    //targets : --- letting this default to the peers assigned to the channel
-    chaincodeId: program.chaincode,
-    fcn: program.method,
-    args: program.arguments
-};
+async function getTimer(request) {
+    var start = Date.now();
+    await getTimeInvoke(request, start);
+}
 
 // each method require different certificate of user
-controller
-    .query(program.user, request)
-    .then(ret => {
-        console.log(
-        	"Query results: ",
-        	ret.toString()
-		);
-    })
-    .catch(err => {
-        console.error(err);
-    });
+function getTimeInvoke(request, start) {
+    controller
+        .query(program.user, request, start)
+        .then(ret => {
+            console.log(
+        	    "Query results: ",
+        	    ret.toString()
+		    );
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}

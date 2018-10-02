@@ -197,7 +197,7 @@ module.exports = function(config) {
             }); */
         },
 
-        query(user, request) {
+        query(user, request, start) {
             return this.get_member_user(user)
                 .then(user_from_store => {
                     return channel.queryByChaincode(request);
@@ -214,6 +214,20 @@ module.exports = function(config) {
                         if (query_responses[0] instanceof Error) {
                             console.error("error from query = ", query_responses[0]);
                         } else {
+                            var end = Date.now();
+
+                            var timeInvoke = end - start;
+                            var fs = require("fs");
+                            fs.appendFile('throughput.txt',end+ "\n" ,  function(err) {
+                            if (err) {
+                                return console.error(err);
+                                }
+                            });
+                            fs.appendFile('latency.txt',timeInvoke+ "\n" ,  function(err) {
+                            if (err) {
+                                return console.error(err);
+                                }
+                            });
                             // const response = query_responses[0];
                             return query_responses[0];
                             // console.log("Response is \n", response);
