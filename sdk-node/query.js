@@ -34,23 +34,25 @@ const config = Object.assign({}, defaultConfig, {
     storePath: store_path
 });
 
-console.log("Config:", config);
+// console.log("Config:", config);
 
 var controller = require("./controller")(config);
 var numLoop = program.loop;
-invoke();
+var request = {
+    //targets: let default to the peer assigned to the client
+    chaincodeId: program.chaincode,
+    fcn: program.method,
+    args: program.arguments
+};
 var timeWait =1000 / numLoop;
+
+invoke();
+
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
         program.arguments[0] = program.arguments[0] + "a";
-        var request = {
-            //targets: let default to the peer assigned to the client
-            chaincodeId: program.chaincode,
-            fcn: program.method,
-            args: program.arguments
-        };
         getTimer(request);
-        await wait(5);
+        await wait(timeWait);
     }
 }
 function wait(ms) {
