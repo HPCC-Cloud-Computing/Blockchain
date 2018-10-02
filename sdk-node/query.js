@@ -47,7 +47,7 @@ async function invoke() {
             //targets: let default to the peer assigned to the client
             chaincodeId: program.chaincode,
             fcn: program.method,
-            args: arg
+            args: program.arguments
         };
         getTimer(request);
         await wait(timeWait);
