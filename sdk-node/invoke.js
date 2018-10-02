@@ -43,13 +43,12 @@ invoke();
 var timeWait =1000 / numLoop;
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
-        var arg = program.arguments;
-        arg[0] = arg[0] + i;
+        program.arguments[0] = program.arguments[0] + "a";
         var request = {
             //targets: let default to the peer assigned to the client
             chaincodeId: program.chaincode,
             fcn: program.method,
-            args: arg
+            args: program.arguments
         };
         getTimer(request);
         await wait(timeWait);
