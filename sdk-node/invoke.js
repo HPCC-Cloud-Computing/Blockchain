@@ -45,16 +45,17 @@ var request = {
     fcn: program.method,
     args: program.arguments
 };
-invoke();
 var timeWait =1000 / numLoop;
+invoke();
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
         program.arguments[0] = program.arguments[0] + "a";
-        await wait(request,timeWait);
+        getTimer(request);
+        await wait(timeWait);
     }
 }
-function wait(request,ms) {
-    return new Promise( setTimeout(getTimer(request), ms))
+function wait(ms) {
+    return new Promise(r => setTimeout(r, ms))
 }
 
 async function getTimer(request) {
