@@ -37,6 +37,7 @@ public class read {
             }
             float la=(float)sum/(float)cout;
             System.out.println("latency : "+la);
+            System.out.println("count : "+cout);
             scan.close();
         } catch (FileNotFoundException e) {
             System.out.println("Error");
