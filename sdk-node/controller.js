@@ -50,8 +50,8 @@ module.exports = function(config) {
     channel.addPeer(peer);
     channel.addOrderer(orderer);
 
-    console.log("Peer: " + grpcProtocol + config.peerHost);
-    console.log("Store path:" + store_path);
+    // console.log("Peer: " + grpcProtocol + config.peerHost);
+    // console.log("Store path:" + store_path);
 
 
     let currentSubmitter = null;
@@ -252,7 +252,7 @@ module.exports = function(config) {
                     for (var j = 0; j < invokeRequest.args.length; j ++) {
                         arrArg.push(invokeRequest.args[j]);
                     }
-                    console.log("invokeRequest:", invokeRequest);
+                    // console.log("invokeRequest:", invokeRequest);
 
                     return channel.sendTransactionProposal({
                         chaincodeId: invokeRequest.chaincodeId,
