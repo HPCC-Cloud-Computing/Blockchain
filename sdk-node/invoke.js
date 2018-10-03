@@ -49,8 +49,8 @@ var timeWait =1000 / numLoop;
 invoke();
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
-        getTimer(request);
         await wait(timeWait);
+        getTimer(request);
     }
 }
 function wait(ms) {
