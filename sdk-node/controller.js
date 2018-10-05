@@ -200,6 +200,19 @@ module.exports = function(config) {
         query(user, request, start) {
             return this.get_member_user(user)
                 .then(user_from_store => {
+                    var end = Date.now();
+                    var timeInvoke = end - start;
+                    var fs = require("fs");
+                    fs.appendFile('throughput.txt',end+ "\n" ,  function(err) {
+                    if (err) {
+                        return console.error(err);
+                        }
+                    });
+                    fs.appendFile('latency.txt',timeInvoke+ "\n" ,  function(err) {
+                    if (err) {
+                        return console.error(err);
+                        }
+                    });
                     return channel.queryByChaincode(request);
                 })
                 .then(query_responses => {
@@ -209,20 +222,6 @@ module.exports = function(config) {
                     //     "], checking results"
                     // );
                     // console.log(query_responses);
-                    var end = Date.now();
-
-                        var timeInvoke = end - start;
-                        var fs = require("fs");
-                        fs.appendFile('throughput.txt',end+ "\n" ,  function(err) {
-                        if (err) {
-                            return console.error(err);
-                            }
-                        });
-                        fs.appendFile('latency.txt',timeInvoke+ "\n" ,  function(err) {
-                        if (err) {
-                            return console.error(err);
-                            }
-                        });
                     // query_responses could have more than one  results if there multiple peers were used as targets
                     if (query_responses && query_responses.length == 1) {
                         if (query_responses[0] instanceof Error) {
