@@ -48,7 +48,7 @@ var request = {
 
 var timeWait =1000 / numLoop;
 if (numLoop >= 8 ) {
-    timeWait = timeWait + 100;
+    timeWait = 250;
     console.log("timeWait: ",timeWait);
 }
 invoke();
