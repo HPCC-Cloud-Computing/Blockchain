@@ -1,5 +1,6 @@
 test=$1
-for i in {1..5}; do
+LOOP=$2
+for i in `seq 1 $LOOP`; do
 test="$test$i"
-done
 echo $test
+done
