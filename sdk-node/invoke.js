@@ -45,12 +45,13 @@ var request = {
     fcn: program.method,
     args: program.arguments
 };
+
 var timeWait =1000 / numLoop;
 invoke();
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
-        await wait(timeWait);
         getTimer(request);
+        await wait(timeWait);
     }
 }
 function wait(ms) {
