@@ -47,6 +47,9 @@ var request = {
 };
 
 var timeWait =1000 / numLoop;
+if (numLoop >= 8 ) {
+    timeWait = timeWait + 100;
+}
 invoke();
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
