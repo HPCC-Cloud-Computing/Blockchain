@@ -46,7 +46,7 @@ var request = {
     args: program.arguments
 };
 var numLoop = 4;
-var timeWait =1000 / numLoop;
+var timeWait = 1000 / numLoop;
 invoke();
 async function invoke() {
     for (var i = 0; i < numLoop; i++) {
