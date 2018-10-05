@@ -44,10 +44,8 @@ var request = {
     fcn: program.method,
     args: program.arguments
 };
-var timeWait =1000 / numLoop;
-
+var timeWait = 1000 / numLoop;
 invoke();
-
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
         getTimer(request);
@@ -69,10 +67,10 @@ function getTimeInvoke(request, start) {
     controller
         .query(program.user, request, start)
         .then(ret => {
-            console.log(
-        	    "Query results: ",
-        	    ret.toString()
-		    );
+            // console.log(
+        	//     "Query results: ",
+        	//     ret.toString()
+		    // );
         })
         .catch(err => {
             console.error(err);
