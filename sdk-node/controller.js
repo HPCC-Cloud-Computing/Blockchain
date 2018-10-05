@@ -107,7 +107,7 @@ module.exports = function(config) {
 
         getSubmitter(client, config) {
             var member;
-            console.log("[getSubmitter]");
+            // console.log("[getSubmitter]");
             return client
                 .getUserContext(config.user, true)
                 .then(user => {
