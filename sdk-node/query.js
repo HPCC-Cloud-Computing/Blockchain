@@ -37,14 +37,14 @@ const config = Object.assign({}, defaultConfig, {
 // console.log("Config:", config);
 
 var controller = require("./controller")(config);
-var numLoop = 4;
+var numLoop = 8;
 var request = {
     //targets: let default to the peer assigned to the client
     chaincodeId: program.chaincode,
     fcn: program.method,
     args: program.arguments
 };
-var timeWait = 500;
+var timeWait = 100;
 invoke();
 async function invoke() {
     for (var i = 0; i < numLoop; i++) {
@@ -67,10 +67,10 @@ function getTimeInvoke(request, start) {
     controller
         .query(program.user, request, start)
         .then(ret => {
-            // console.log(
-        	//     "Query results: ",
-        	//     ret.toString()
-		    // );
+            console.log(
+        	    "Query results: ",
+        	    ret.toString()
+		    );
         })
         .catch(err => {
             console.error(err);
