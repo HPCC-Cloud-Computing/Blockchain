@@ -44,7 +44,7 @@ var request = {
     fcn: program.method,
     args: program.arguments
 };
-var timeWait = 250;
+var timeWait = 300;
 invoke();
 async function invoke() {
     for (var i = 0; i < numLoop; i++) {
