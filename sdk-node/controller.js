@@ -200,11 +200,11 @@ module.exports = function(config) {
         query(user, request, start) {
             return this.get_member_user(user)
                 .then(user_from_store => {
-                    return channel.queryByChaincode(request);
-                })
-                .then(query_responses => {
+                    var aa = channel.queryByChaincode(request);
                     var end = Date.now();
                     var timeInvoke = end - start;
+
+
                     var fs = require("fs");
                     fs.appendFile('throughput.txt',end+ "\n" ,  function(err) {
                     if (err) {
@@ -216,6 +216,9 @@ module.exports = function(config) {
                         return console.error(err);
                         }
                     });
+                    return aa;
+                })
+                .then(query_responses => {
                     // console.log(
                     //   "Query has completed on channel [" +
                     //     config.channelName +
