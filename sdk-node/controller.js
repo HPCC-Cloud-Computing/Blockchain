@@ -200,6 +200,9 @@ module.exports = function(config) {
         query(user, request, start) {
             return this.get_member_user(user)
                 .then(user_from_store => {
+                    return channel.queryByChaincode(request);
+                })
+                .then(query_responses => {
                     var end = Date.now();
                     console.log("start: ", start);
                     console.log("end: ", end);
@@ -215,9 +218,6 @@ module.exports = function(config) {
                         return console.error(err);
                         }
                     });
-                    return channel.queryByChaincode(request);
-                })
-                .then(query_responses => {
                     // console.log(
                     //   "Query has completed on channel [" +
                     //     config.channelName +
