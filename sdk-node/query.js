@@ -44,10 +44,10 @@ var request = {
     fcn: program.method,
     args: program.arguments
 };
-var timeWait = 1000 / numLoop;
+var timeWait = 50;
 invoke();
 async function invoke() {
-    for (var i = 0; i < numLoop; i++) {
+    for (var i = 0; i < 2 * numLoop; i++) {
         getTimer(request);
         await wait(timeWait);
     }
