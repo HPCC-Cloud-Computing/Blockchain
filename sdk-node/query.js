@@ -44,18 +44,20 @@ var request = {
     fcn: program.method,
     args: program.arguments
 };
-var timeWait = 70;
+var timeWait = 125;
 invoke();
 async function invoke() {
     for (var i = 0; i < 2 * numLoop; i++) {
-        getTimer(request);
-        await wait(timeWait);
+        await setTimeout(function () {
+            program.arguments[0] = program.arguments[0] + "a";
+            getTimer(request);
+        },timeWait);
     }
 }
-function wait(ms) {
-    program.arguments[0] = program.arguments[0] + "a";
-    return new Promise(r => setTimeout(r, ms))
-}
+// function wait(ms) {
+//     program.arguments[0] = program.arguments[0] + "a";
+//     return new Promise(r => setTimeout(r, ms))
+// }
 
 async function getTimer(request) {
     var start = Date.now();
